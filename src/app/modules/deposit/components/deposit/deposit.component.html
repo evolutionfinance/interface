@@ -1,0 +1,168 @@
+<div class="wrapper">
+    <div class="col main">
+        <div *ngIf="(account$ | async); else walletNotConnected">
+            <div class="deposit-step" *ngIf="emptyState">
+                <div class="title">
+                    Your balance is zero
+                </div>
+                <div class="message">
+                    Your balance of {{reserve?.symbol}} is 0. Transfer LTC to your wallet to be able to deposit
+                </div>
+                <button routerLink="/deposit" class="evl-btn red mt">Go back</button>
+            </div>
+            <ng-container *ngIf="!emptyState">
+                <div class="deposit-step" *ngIf="currentFlowStep === steps.USER_INPUT">
+                    <div class="title">
+                        How much would you like to deposit?
+                    </div>
+                    <div class="message">
+                        Please enter an amount you would like to deposit. The maximum amount you can deposit is shown
+                        below.
+                    </div>
+                    <div class="asset-input" [class.invalid]="amountControl?.invalid && amountControl.touched">
+                        <div class="head">
+                            <div class="key">Available ot deposit</div>
+                            <div class="value"><b>{{balance | bigNum: reserve?.decimals}}</b> {{reserve?.symbol}}</div>
+                        </div>
+                        <nz-input-group [nzSuffix]="suffixCurrency" [nzPrefix]="prefixIcon">
+                            <input maxAmount
+                                   [maxAvailable]="balance"
+                                   [decimals]="reserve.decimals"
+                                   [control]="amountControl"
+                                   [formControl]="amountControl"
+                                   nz-input type="number"
+                                   placeholder="Amount">
+                        </nz-input-group>
+                        <ng-template #suffixCurrency>
+                            <button class="gradient-text inline" (click)="setMax(100)">MAX</button>
+                        </ng-template>
+                        <ng-template #prefixIcon>
+                            <img class="asset-icon" [src]="reserve.assetPictureUrl">
+                        </ng-template>
+                        <div class="quick-select">
+                            <div class="quick-select-item" (click)="setMax(25)">25%</div>
+                            <div class="quick-select-item" (click)="setMax(50)">50%</div>
+                            <div class="quick-select-item" (click)="setMax(75)">75%</div>
+                            <div class="quick-select-item" (click)="setMax(100)">MAX</div>
+                        </div>
+                    </div>
+                    <button class="evl-btn red" (click)="checkAmount()">Deposit</button>
+                    <button class="back" routerLink="/deposit">Go back</button>
+                </div>
+                <div class="deposit-step" *ngIf="currentFlowStep === steps.TRANSACTION_DETAILS">
+                    <div class="title">
+                        Deposit overview
+                    </div>
+                    <div class="message">
+                        These are your transaction details. Make sure to check if this is correct before submitting.
+                    </div>
+                    <div class="transaction-details">
+                        <div class="details stats">
+                            <div class="flex-row">
+                                <div class="key">Amount</div>
+                                <div class="col">
+                                    <div class="value">
+                                        <img class="asset-icon" [src]="reserve.assetPictureUrl" alt="">
+                                        <b>{{amountControl?.value || 0}}</b> {{reserve.symbol}}
+                                    </div>
+                                    <div class="sub-total">
+                                        $ {{(amountControl?.value * +reserve.priceInUsd) | number: '1.0-2'}}</div>
+                                </div>
+
+                            </div>
+                            <div class="flex-row no-margin">
+                                <div class="key">New Health factor</div>
+                                <div class="value"><b class="green">{{nextHealthFactor | number: '1.2'}}</b></div>
+                            </div>
+                        </div>
+                    </div>
+                    <app-transaction
+                            (submit)="submitDeposit()"
+                            (approve)="approveDeposit()"
+                            [currentFlowStep]="currentTransactionsStatus"
+                            [config]="transactionConfig"></app-transaction>
+                    <button class="back" routerLink="/deposit">Go back</button>
+                </div>
+            </ng-container>
+        </div>
+        <ng-template #walletNotConnected>
+            <app-wallet-not-connected
+                    [subTitle]="'We couldn’t detect a wallet. Connect a wallet to deposit and see your balance grow.'"
+                    [route]="'/deposit'">
+            </app-wallet-not-connected>
+        </ng-template>
+    </div>
+    <div class="col secondary">
+        <div class="wallet-balance">
+            <div class="wallet-balance-item">
+                <div class="key">Your wallet balance</div>
+                <div class="value">
+                    <span *ngIf="+balance"><b>{{balance | bigNum: reserve?.decimals}}</b> {{reserve?.symbol}}</span>
+                    <span *ngIf="!+balance">-</span>
+                </div>
+            </div>
+            <div class="wallet-balance-item">
+                <div class="key">Health Factor <app-tooltip-info [data]="INFO.HEALTH_FACTOR"></app-tooltip-info></div>
+                <div class="value">
+                    <span *ngIf="+healthFactor"><b class="green">{{healthFactor | number: '1.2'}}</b></span>
+                    <span *ngIf="!+healthFactor">-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card stats">
+            <div class="card-title">
+                <img [src]="reserve?.assetPictureUrl">  {{reserve?.symbol}} Reserve Overview
+            </div>
+            <div class="flex-row">
+                <div class="key">Utilization rate</div>
+                <div class="value"><b>{{reserve?.utilizationRate | percent}}</b></div>
+            </div>
+            <div class="flex-row">
+                <div class="key">Available liquidity</div>
+                <div class="value">
+                    <b>{{reserve?.totalLiquidity | bigNum: reserve?.decimals | fNumber}}</b> {{reserve?.symbol}}
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="key">Asset price</div>
+                <div class="value"><b>{{reserve?.priceInUsd | number: '1.0-2'}}</b> $</div>
+            </div>
+            <div class="flex-row">
+                <div class="key">Deposit rate</div>
+                <div class="value"><b class="brown">{{reserve?.liquidityRate | bigNum: 25}}</b> %</div>
+            </div>
+            <div class="flex-row">
+                <div class="key">Can be used as collateral</div>
+                <div class="value">
+                    <b class="green" *ngIf="reserve?.usageAsCollateralEnabled">
+                        Yes
+                    </b>
+                    <b class="brown" *ngIf="!reserve?.usageAsCollateralEnabled">
+                        No
+                    </b>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="key">Maximum LTV <app-tooltip-info [data]="INFO.MAXIMUM_LTV"></app-tooltip-info></div>
+                <div class="value"><b>{{reserve?.baseLTVasCollateral | bigNum: 4 | percent}}</b></div>
+            </div>
+            <div class="flex-row">
+                <div class="key">Liquidation threshold <app-tooltip-info [data]="INFO.LIQUIDATION_THRESHOLD"></app-tooltip-info></div>
+                <div class="value"><b>{{reserve?.reserveLiquidationThreshold | bigNum: 4 | percent}}</b></div>
+            </div>
+            <div class="flex-row">
+                <div class="key">Liquidation penalty <app-tooltip-info [data]="INFO.LIQUIDATION_PENALTY"></app-tooltip-info></div>
+                <div class="value"><b>{{util.getLiquidationPenalty(reserve) | bigNum: 4 | percent}}</b></div>
+            </div>
+            <div class="flex-row historical-rate">
+                <div class="key">Historical rate</div>
+                <div class="value brown"><b>APY</b></div>
+            </div>
+            <x-chartist type="Line"
+                        [data]="chartsData"
+                        [options]="options">
+            </x-chartist>
+        </div>
+    </div>
+</div>

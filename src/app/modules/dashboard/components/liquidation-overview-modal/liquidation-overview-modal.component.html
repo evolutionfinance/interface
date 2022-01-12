@@ -1,0 +1,28 @@
+<div class="wrapper">
+    <div class="head">
+        <span class="bold">Liquidation Overview</span>
+        <span>Details about your Loan to Value (LTV) ratio and liquidation.</span>
+    </div>
+    <div class="content">
+        <div>
+            <span>Current LTV <app-tooltip-info [data]="INFO.LOAN_TO_VALUE"></app-tooltip-info></span>
+            <span class="bold">{{currentLTV | percent: '1.2'}}</span>
+        </div>
+        <div>
+            <span>Maximum LTV <app-tooltip-info [data]="INFO.MAXIMUM_LTV"></app-tooltip-info></span>
+            <span class="bold">80 %</span>
+        </div>
+<!--        <div>-->
+<!--            <span>Liquidation threshold <app-tooltip-info [data]="INFO.LIQUIDATION_THRESHOLD"></app-tooltip-info></span>-->
+<!--            <span class="bold">4.00 %</span>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <span>Current asset price</span>-->
+<!--            <span class="bold">17.6 LTC</span>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <span>Asset liquidation price</span>-->
+<!--            <span class="bold">17.6 LTC</span>-->
+<!--        </div>-->
+    </div>
+</div>

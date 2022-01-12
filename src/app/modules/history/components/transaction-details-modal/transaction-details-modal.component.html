@@ -1,0 +1,68 @@
+<div class="transaction-container">
+    <div class="title">
+        <h2>{{ transaction?.__typename }}</h2>
+<!--        <h4>{{ transaction.transactionType }}</h4>-->
+    </div>
+    <div>
+        <nz-list>
+            <nz-list-item>
+                <div>
+                    Date
+                </div>
+                <div>
+                    {{(transaction?.timestamp * 1000) | date: 'MM/dd/YYYY'}}
+                </div>
+            </nz-list-item>
+            <nz-list-item>
+                <div>
+                    Amount
+                </div>
+                <div>
+                    <div class="amount-container">
+                        <div class="coin-container">
+                            <img [src]="transaction?.reserve.assetPictureUrl" [alt]="transaction.reserve.symbol">
+                            <div>
+                                <span class="bold" *ngIf="transaction.__typename !== 'UsageAsCollateral'">
+                                    {{ transaction.amount | bigNum: transaction.reserve.decimals}}
+                                </span>
+                                {{transaction?.reserve.symbol}}
+                            </div>
+                        </div>
+                        <div class="usd-container" *ngIf="transaction.__typename !== 'UsageAsCollateral'">
+                            <span>$ {{transaction.totalInUsd | number: '1.0-2'}} USD</span>
+                        </div>
+                    </div>
+                </div>
+            </nz-list-item>
+            <nz-list-item *ngIf="transaction.__typename === 'Borrow'">
+                <div>
+                    Borrow rate
+                </div>
+                <div>
+                    <span class="bold">{{ transaction.borrowRate | bigNum: 25 }} %</span>
+                </div>
+            </nz-list-item>
+            <nz-list-item *ngIf="transaction.__typename === 'Borrow'">
+                <div>
+                    Borrow rate type
+                </div>
+                <div class="green">
+                    Variable
+                </div>
+            </nz-list-item>
+            <nz-list-item *ngIf="transaction.__typename == 'UsageAsCollateral'">
+                <div class="collateral-container">
+                    <app-collateral-buttons [fromState]="transaction.fromState"></app-collateral-buttons>
+                </div>
+            </nz-list-item>
+            <nz-list-item>
+                <div>
+                    View transaction
+                </div>
+                <a href="https://kovan.etherscan.io/tx/{{transactionHash}}" target="_blank">
+                    Etherscan <img src="assets/icons/external-link.svg" alt="open">
+                </a>
+            </nz-list-item>
+        </nz-list>
+    </div>
+</div>

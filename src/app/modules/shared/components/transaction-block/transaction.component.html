@@ -1,0 +1,111 @@
+<div class="transaction-status"
+     [class.success]="false"
+     [class.pending]="currentStep.currentStatus === stepStatuses.PENDING">
+    <div class="steps">
+        <div class="steps-item"
+             *ngFor="let item of config?.steps; index as i"
+             [class.success]="(item.currentStatus === stepStatuses.SUCCESS) || currentFlowStep === statuses.SUCCESS"
+             [class.active]="currentFlowStep === item.type && (item.currentStatus === stepStatuses.DEFAULT || item.currentStatus === stepStatuses.DENIED)">
+            {{i + 1}} {{item.name}}
+        </div>
+    </div>
+    <div class="transaction-status-body">
+        <div class="overview-body" *ngIf="currentStep.type === statuses.APPROVE">
+            <ng-container *ngIf="currentStep.currentStatus === stepStatuses.DEFAULT">
+                <div class="info">
+                    <b>Approve</b>
+                    <p>Please approve to continue</p>
+                </div>
+                <button class="evl-btn red" (click)="onApprove()">submit</button>
+            </ng-container>
+            <ng-container *ngIf="currentStep.currentStatus === stepStatuses.DENIED">
+                <div class="info">
+                    <b>{{config.type | titlecase}}</b>
+                    <p class="error">Transaction failed with the reason: MetaMask Tx Signature: User denied transaction signature.</p>
+                </div>
+                <button class="evl-btn red 123" (click)="onApprove()">submit</button>
+            </ng-container>
+
+        </div>
+
+        <div class="overview-body" *ngIf="currentStep.type === statuses.SUBMIT">
+            <ng-container *ngIf="currentStep.currentStatus === stepStatuses.DEFAULT">
+                <div class="info">
+                    <b>{{config.type | titlecase}}</b>
+                    <span>Please submit to {{config?.type}}</span>
+                </div>
+                <button class="evl-btn red" (click)="onSubmit()">submit</button>
+            </ng-container>
+            <ng-container *ngIf="currentStep.currentStatus === stepStatuses.DENIED">
+                <div class="info">
+                    <b>{{config.type | titlecase}}</b>
+                    <p class="error">Transaction failed with the reason: MetaMask Tx Signature: User denied transaction signature.</p>
+                </div>
+                <button class="evl-btn red" (click)="onSubmit()">submit</button>
+            </ng-container>
+        </div>
+
+
+        <div class="overview-body" *ngIf="currentStep.currentStatus === stepStatuses.PENDING">
+            <div class="info">
+                Transaction(s) Pending
+            </div>
+        </div>
+
+
+        <div class="overview-body" *ngIf="currentFlowStep === statuses.SUCCESS">
+            <div class="info">
+                <b class="green">Success</b>
+            </div>
+            <button class="evl-btn red" routerLink="/dashboard">Dashboard</button>
+        </div>
+
+    </div>
+
+
+    <div class="transaction-status-footer" *ngIf="config?.steps?.length === 3 && currentFlowStep !== statuses.APPROVE">
+        <div class="type">
+            Approve
+        </div>
+        <div class="status dot-green">
+            Confirmed
+        </div>
+        <a class="etherscan" target="_blank" href="https://kovan.etherscan.io/tx/{{approveStep?.hash}}">
+            Etherscan
+            <img src="assets/icons/external-link.svg" alt="">
+        </a>
+    </div>
+
+    <div class="transaction-status-footer" *ngIf="currentStep.currentStatus === stepStatuses.PENDING ">
+        <div class="type">
+            <ng-container *ngIf="approveStep">
+               Approve
+            </ng-container>
+            <ng-container *ngIf="!approveStep">
+                {{config?.type | titlecase}}
+            </ng-container>
+
+        </div>
+        <div class="status">
+            Pending
+            <img class="rotate" src="assets/icons/pending.svg" alt="Pending">
+        </div>
+        <a class="etherscan" target="_blank" href="{{etherscanUrl}}/tx/{{currentStep?.hash}}">
+            Etherscan
+            <img src="assets/icons/external-link.svg" alt="">
+        </a>
+    </div>
+
+    <div class="transaction-status-footer" *ngIf="currentFlowStep === statuses.SUCCESS">
+        <div class="type">
+            {{config?.type | titlecase}}
+        </div>
+        <div class="status dot-green">
+            Confirmed
+        </div>
+        <a class="etherscan" target="_blank" href="{{etherscanUrl}}/tx/{{currentStep?.hash}}">
+            Etherscan
+            <img src="assets/icons/external-link.svg" alt="">
+        </a>
+    </div>
+</div>

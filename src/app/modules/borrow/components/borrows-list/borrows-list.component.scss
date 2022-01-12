@@ -1,0 +1,82 @@
+
+th {
+  .sub-name {
+    font-size: 12px;
+    font-weight: normal;
+    @media screen and (max-width: 530px) {
+      font-size: 8px;
+    }
+  }
+}
+
+.search {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+
+  i {
+    color: var(--textColor);
+  }
+
+  nz-input-group {
+    width: 360px;
+    padding: 10px 20px
+  }
+}
+
+.connect-wallet-warning {
+  padding: 20px;
+  white-space: nowrap;
+  background: var(--contentBackground);
+  color: var(--textColor);
+
+  span {
+    font-weight: 500;
+  }
+
+  //width: 400px;
+}
+
+.ant-table-wrapper {
+  height: 775px;
+  overflow: auto;
+}
+
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media screen and (max-width: 850px) {
+
+  .search {
+    flex-direction: column;
+    align-items: center;
+
+    .toggle-mode {
+      order: 2;
+      margin-top: 24px;
+    }
+
+    nz-input-group {
+      margin-left: unset;
+      width: 100%;
+    }
+  }
+
+  .ant-table-wrapper {
+    height: 650px;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: block;
+  }
+
+}

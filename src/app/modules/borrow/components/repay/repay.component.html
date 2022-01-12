@@ -1,0 +1,77 @@
+<div class="wrapper">
+    <div class="row-overview">
+        <div class="flex-row">
+            <div class="col balance">
+                <div class="flex-row">
+                    <div class="key">The amount that was borrowed</div>
+                    <div class="value">
+                        <div class="col ">
+                            <div class="key">
+                                <img class="asset-icon" [src]="userReserve?.reserve?.assetPictureUrl" alt="">
+                                <b>{{userReserve?.scaledVariableDebt | bigNum: reserve.decimals}}</b> {{reserve.symbol}}
+                            </div>
+                            <div class="value">
+<!--                                $ {{(util.getAsNumber(userReserve.scaledVariableDebt, userReserve.reserve.decimals) * +userReserve.reserve.priceInUsd) | number: '1.0-2'}}-->
+                                $ {{userReserveInUsd | number: '1.0-2'}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="flex-row">
+                    <div class="key">Your collateral</div>
+                    <div class="value"><b>{{collateralTotal | number: '1.0-2'}} </b>USD</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="flex-row">
+                    <div class="key">
+                        Health factor
+                        <app-tooltip-info [data]="INFO.HEALTH_FACTOR"></app-tooltip-info>
+                    </div>
+                    <div class="value"><b class="green">{{healthFactor | number: '1.0-2'}}</b></div>
+                </div>
+            </div>
+        </div>
+        <div class="flex-row">
+            <div class="col balance">
+                <div class="flex-row">
+                    <div class="key">Your wallet</div>
+                    <div class="value">
+                        <div class="col">
+                            <div class="key">
+                                <img class="asset-icon" [src]="reserve?.assetPictureUrl" alt="">
+                                <b>{{balance | bigNum: reserve.decimals}}</b> {{reserve.symbol}}
+                            </div>
+                            <div class="value">
+                                $ {{balanceInUsd | number: '1.0-2'}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="flex-row">
+                    <div class="key">Collateral composition</div>
+                    <div class="composition-bar">
+                        <app-composition-bar [config]="compositionConfig"></app-composition-bar>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="flex-row">
+                    <div class="key">Loan to value</div>
+                    <div class="value"><b>{{reserve.baseLTVasCollateral | bigNum: 4 | percent}}</b></div>
+                </div>
+                <div class="flex-row">
+                    <button class="evl-btn outline small" (click)="openLiquidationModal()">Details</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="main-content">
+        <router-outlet></router-outlet>
+    </div>
+</div>

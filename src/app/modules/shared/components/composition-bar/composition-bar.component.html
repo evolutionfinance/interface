@@ -1,0 +1,16 @@
+<div class="bar">
+    <div class="part"
+         [ngStyle]="{width: part.percentage.toFixed(2) + '%', backgroundColor: part.color}"
+         *ngFor="let part of config">
+        <div class="label">
+            <img *ngIf="part.pictureUrl" [src]="part.pictureUrl" class="asset-icon" alt="">
+            <div class="symbol">
+                {{part.label}}
+            </div>
+            <div class="value" *ngIf="part.value">{{part.value | number: '1.0-2'}}</div>
+            <div class="percent">
+                <b>{{(part.percentage / 100) | percent: '1.0-2'}}</b>
+            </div>
+        </div>
+    </div>
+</div>

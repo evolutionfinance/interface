@@ -1,0 +1,362 @@
+@import "src/assets/styles/variables";
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+
+  > .row {
+    height: 100%;
+  }
+}
+
+.charts {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+
+  &-item {
+    width: 32%;
+    padding: 20px 0 0 0;
+    background-color: var(--contentBackground);
+    color: var(--textColor);
+    border-radius: 2px;
+
+    //::ng-deep {
+    &.borrow {
+      ::ng-deep {
+        .ct-point {
+          stroke: var(--orange);
+        }
+
+        .ct-line {
+          stroke: var(--orange);
+        }
+      }
+
+      .borrow-chart-titles {
+        display: flex;
+        justify-content: space-between;
+
+        .variable {
+          display: flex;
+          align-items: center;
+
+          .circle {
+            width: 10px;
+            height: 10px;
+            background: var(--orange);
+            border-radius: 5px;
+            margin-right: 10px;
+          }
+        }
+      }
+
+    }
+
+    &.deposit, &.utilization {
+      ::ng-deep {
+        .ct-point {
+          stroke: var(--green);
+        }
+
+        .ct-line {
+          stroke: var(--green);
+        }
+      }
+    }
+
+    &.borrow, &.deposit, &.utilization {
+      ::ng-deep {
+        .ct-label {
+          color: var(--textColor);
+        }
+
+        .ct-grid {
+          stroke: var(--textColor);
+        }
+      }
+    }
+
+
+    //}
+
+    &-name {
+      padding: 0 24px 12px 24px;
+    }
+  }
+}
+
+
+.row {
+  display: flex;
+  justify-content: space-between;
+
+  .col {
+    background-color: var(--contentBackground);
+    border-radius: 2px;
+
+    ::ng-deep {
+      .ant-card-head {
+        background-color: var(--headerBackground);
+        color: $black;
+        font-weight: 400;
+      }
+    }
+
+    &.secondary {
+      width: 32%;
+      //display: flex;
+
+      //&.flex {
+      //  display: flex;
+      //}
+
+      ::ng-deep {
+        //.ant-card {
+        //  height: 100%;
+        //}
+        //
+        //.ant-card-body {
+        //  height: 100%;
+        //}
+      }
+
+      .sub-title {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 1.4em;
+      }
+    }
+
+    &.main {
+      width: calc(68% - 20px);
+      margin-right: 20px;
+    }
+
+  }
+}
+
+.pie-chart-holder {
+  position: relative;
+  //height: 150px;
+
+  ::ng-deep .ct-series-a .ct-slice-donut {
+    stroke: #7CC885;
+  }
+
+  ::ng-deep .ct-series-b .ct-slice-donut {
+    stroke: #DC5A5C;
+  }
+
+  img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 75px;
+    height: 75px;
+    object-fit: contain;
+  }
+}
+
+.chart-data {
+  display: flex;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  max-width: 100%;
+
+  &-info {
+    text-align: center;
+    margin: 0 20px;
+    min-width: 200px;
+  }
+
+  &-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.borrow {
+      &:after {
+        background-color: #DC5A5C;
+      }
+    }
+
+    &:after {
+      content: '';
+      width: 10px;
+      height: 10px;
+      display: block;
+      margin-left: 8px;
+      background-color: var(--green);
+      border-radius: 50%;
+    }
+  }
+
+  &-amount {
+    font-size: 21px;
+    margin: 10px 0;
+  }
+
+  &-usd {
+    font-size: 14px;
+  }
+}
+
+
+.rates {
+  width: 500px;
+  margin: 35px auto 48px auto;
+  display: flex;
+  justify-content: space-between;
+  max-width: 100%;
+
+  .col {
+    width: 48%;
+  }
+
+  .rates-item {
+    border: 1px solid var(--textColor);
+    padding: 8px 15px;
+    display: flex;
+    justify-content: space-between;
+
+    &-with-header {
+      border: 1px solid var(--green);;
+      margin-top: 20px;
+      display: block;
+
+      .rates-item-header {
+        background-color: var(--green);
+        color: var(--contentBackground);
+      }
+
+      &.borrow {
+        border: 1px solid var(--orange);
+
+        .rates-item-header {
+          background-color: var(--orange);
+        }
+      }
+    }
+
+    &-header {
+      padding: 8px 15px;
+      color: #ffffff;
+    }
+
+    &-body {
+      padding: 8px 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}
+
+.additional-info {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+
+  .col {
+    margin: 0 6px;
+    text-align: center;
+  }
+}
+
+.mobile-only {
+  display: none;
+}
+
+.mobile-charts-container {
+  width: 100%;
+
+  nz-collapse {
+    margin-top: 16px;
+  }
+}
+
+::ng-deep {
+  .ant-collapse-extra {
+    width: unset !important;
+    display: flex;
+  }
+}
+
+.collapse-icon {
+  fill: $red;
+}
+
+@media screen and (max-width: 850px) {
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: block !important;
+  }
+
+  .main {
+    width: 100% !important;
+    margin-right: unset !important;
+
+    ::ng-deep {
+      .ant-card-head {
+        display: flex;
+        justify-content: center;
+      }
+
+      .ant-card-body {
+        padding: unset;
+      }
+    }
+
+    .chart-data {
+      flex-direction: column;
+    }
+
+    .chart-data .chart-data-info:first-child {
+      order: 2;
+    }
+
+    .chart-data .chart-data-info:last-child {
+      order: 3;
+    }
+
+    .rates {
+      display: flex !important;
+      flex-direction: column;
+      align-items: center;
+      width: unset !important;
+      margin: 16px;
+
+      .rates-item {
+        margin-top: 16px;
+      }
+
+      .col {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+
+    .additional-info {
+      flex-wrap: wrap;
+
+      .col {
+        width: 100px;
+        margin-top: 10px;
+      }
+    }
+  }
+
+  .charts-item {
+    width: 100%;
+  }
+
+}

@@ -1,0 +1,120 @@
+<div class="balance-container">
+    <div *ngIf="data.length; else emptyDepositsList">
+
+        <div class="balance-content">
+            <div class="left-section">
+                <div class="row">
+                    <span>You borrowed</span>
+                    <span class="bold">$ {{borrowInfo.borrowed | number: '1.0-2'}} USD</span>
+                </div>
+                <div class="row">
+                    <span>Health factor</span>
+                    <span class="bold green">{{borrowInfo.healthFactor | number: '1.0-2'}}</span>
+                </div>
+                <div>
+                    <div class="borrowing-composition">
+                <span>
+                    Borrowing composition
+                </span>
+                        <span>
+                    Borrowing power used <span class="bold">{{borrowInfo.borrowingPowerUsed | percent: '1.2'}}</span>
+                </span>
+                    </div>
+                    <div>
+                        <app-composition-bar [config]="borrowCompositionConfig"></app-composition-bar>
+                    </div>
+                </div>
+            </div>
+            <div class="right-section">
+                <div class="row">
+                    <span>You collateral</span>
+                    <span class="bold">$ {{borrowInfo.collateral.toFixed(2)}} USD</span>
+                </div>
+                <div class="row">
+                    <div class="row currentLTV">
+                        <span>Current LTV</span>
+                        <span class="green bold"> {{borrowInfo.currentLTV | percent: '1.2'}}</span>
+                    </div>
+                    <button class="evl-btn outline small" (click)="openLiquidationModal()">
+                        Details
+                    </button>
+                </div>
+                <div>
+            <span>
+                Collateral composition
+            </span>
+                    <div>
+                        <app-composition-bar [config]="collateralCompositionConfig"></app-composition-bar>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nz-table #basicTable [nzData]="data"
+                  [nzShowPagination]="false"
+                  nzTableLayout="auto"
+                  [nzPageSize]="100"
+                  [nzScroll]="{ y: 'calc(100vh - 429px)'}">
+            <thead>
+            <tr>
+                <th *ngFor="let column of listOfColumns"
+                    [nzSortOrder]="column.sortOrder"
+                    [nzWidth]="column.nzWidth"
+                    [nzSortFn]="column.sortFn"
+                    [nzSortDirections]="column.sortDirections">
+                        <span *ngIf="!column.subName; else subName">
+                            {{ column.name }}
+                        </span>
+                    <ng-template #subName>
+                        <div>
+                            {{ column.name }}
+                            <div class="sub-name green">{{column.subName}}
+                                <app-tooltip-info [data]="INFO.VARIABLE_INTEREST"></app-tooltip-info>
+                            </div>
+                        </div>
+                    </ng-template>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="pointer"
+                *ngFor="let item of getAsMarketReserves(basicTable.data)">
+                <td class="asset">
+                    <div class="icon">
+                        <img [src]="item.reserve.assetPictureUrl" [alt]="item.reserve.name">
+                    </div>
+                    <span> {{item.reserve.name}} ({{item.reserve.symbol}})</span>
+                </td>
+                <td>
+                    <b>
+                        {{
+                        item.scaledVariableDebt | bigNum: item.reserve.decimals
+                        }}
+                    </b>
+                    {{item.reserve.symbol }}
+                </td>
+                <td>
+                    <div class="green bold">
+                        {{item.reserve.liquidityRate | bigNum: 25 | fNumber}} %
+                    </div>
+                </td>
+                <td>
+                    <div class="brown bold">
+                        <div class="action-buttons">
+                            <button class="evl-btn red" (click)="navigateToBorrow(item)">
+                                BORROW
+                            </button>
+                            <button class="evl-btn outline" (click)="navigateToRepay(item)">
+                                REPAY
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </nz-table>
+    </div>
+    <ng-template #emptyDepositsList>
+        <app-empty-list [config]="emptyListConfig"></app-empty-list>
+    </ng-template>
+</div>
