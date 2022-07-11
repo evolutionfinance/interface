@@ -113,7 +113,7 @@ export class BorrowsListComponent implements OnInit, OnDestroy {
         if (this.reserves.length && this.userReserves.length) {
             this.reserves.forEach(x => {
                 const deposit = this.userReserves.find(y => y.reserve.symbol === x.symbol);
-                if (Number(deposit?.scaledVariableDebt) > 0) {
+                if (Number(deposit?.currentTotalDebt) > 0) {
                     x.haveBorrow = true;
                 }
             });

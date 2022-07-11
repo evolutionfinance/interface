@@ -27,13 +27,13 @@
                         <span>Available</span>
                         <b>
                             {{
-							userBorrowedReserve?.scaledVariableDebt  | bigNum: userBorrowedReserve?.reserve?.decimals : 4
+							userBorrowedReserve?.currentTotalDebt  | bigNum: userBorrowedReserve?.reserve?.decimals : 4
                             }}
                         </b>
                     </div>
                     <nz-input-group [formGroup]="borrowedForm">
                         <input maxAmount
-                               [maxAvailable]="userBorrowedReserve?.scaledVariableDebt || 0"
+                               [maxAvailable]="userBorrowedReserve?.currentTotalDebt || 0"
                                [decimals]="userBorrowedReserve?.reserve?.decimals"
                                [control]="borrowedForm.get('amount')"
                                formControlName="amount"

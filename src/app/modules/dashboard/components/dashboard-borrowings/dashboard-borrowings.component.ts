@@ -45,7 +45,7 @@ export class DashboardBorrowingsComponent implements OnInit, OnDestroy {
 		{
 			name: 'Borrowed',
 			sortOrder: null,
-			sortFn: (a: UserReserve, b: UserReserve) => compareBigNumber(a.scaledVariableDebt, b.scaledVariableDebt),
+			sortFn: (a: UserReserve, b: UserReserve) => compareBigNumber(a.currentTotalDebt, b.currentTotalDebt),
 			sortDirections: ['descend', 'ascend', null],
 			nzWidth: null,
 		},
@@ -93,7 +93,7 @@ export class DashboardBorrowingsComponent implements OnInit, OnDestroy {
 		this.reservesService.getUserReserves()
 			.pipe(
 				tap(list => this.calcInfo(list)),
-				map((list: UserReserve[]) => list.filter(item => +item.scaledVariableDebt > 0)),
+				map((list: UserReserve[]) => list.filter(item => +item.currentTotalDebt > 0)),
 				takeUntil(this.destroyed$)
 			)
 			.subscribe((list) => {

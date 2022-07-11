@@ -8,7 +8,7 @@
                         <div class="col ">
                             <div class="key">
                                 <img class="asset-icon" [src]="userReserve?.reserve?.assetPictureUrl" alt="">
-                                <b>{{userReserve?.scaledVariableDebt | bigNum: reserve.decimals}}</b> {{reserve.symbol}}
+                                <b>{{userReserve?.currentTotalDebt | bigNum: reserve.decimals}}</b> {{reserve.symbol}}
                             </div>
                             <div class="value">
 <!--                                $ {{(util.getAsNumber(userReserve.scaledVariableDebt, userReserve.reserve.decimals) * +userReserve.reserve.priceInUsd) | number: '1.0-2'}}-->

@@ -73,7 +73,7 @@ export class ReservesService {
 
 	initUserReserveSocket(account: string): void {
 		combineLatest([
-			this.userReservesSocket.subscribe({pool: environment.pool, userAddress: account}),
+			this.userReservesSocket.subscribe({userAddress: account, pool: environment.pool, }),
 			this.getEthPriceSocket()
 		]).subscribe(([reservesRes, ethPrice]: [SubscriptionResult<UserReservesResponse>, SubscriptionResult<PriceOracleResponse>]) => {
 			if (reservesRes.data) {

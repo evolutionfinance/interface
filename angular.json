@@ -60,7 +60,9 @@
               "hash.js",
               "bignumber.js",
               "bs58",
-              "bchaddrjs"
+              "bchaddrjs",
+              "@renproject",
+              "@apollo"
             ]
           },
           "configurations": {

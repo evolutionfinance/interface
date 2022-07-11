@@ -13,6 +13,7 @@
   },
   "private": true,
   "dependencies": {
+    "@aave/contract-helpers": "^0.30.0",
     "@angular/animations": "~11.1.2",
     "@angular/common": "~11.1.2",
     "@angular/compiler": "~11.1.2",
@@ -33,6 +34,7 @@
     "bignumber.js": "^9.0.1",
     "chartist": "^0.11.4",
     "chartist-plugin-tooltips-updated": "^0.1.4",
+    "ethers": "^5.5.4",
     "graphql": "^15.0.0",
     "moment": "^2.29.1",
     "ng-chartist": "^4.1.0",

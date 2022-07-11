@@ -47,7 +47,6 @@ export class HistoryService {
         const filteredByUser = wethList.data.userTransactions.filter(item => {
           return item?.onBehalfOf?.id?.toLowerCase() === account.toLowerCase();
         });
-        console.log('list', wethList, filteredByUser);
         const newList = JSON.parse(JSON.stringify(list.data.userTransactions.concat(filteredByUser).sort((a, b) => a.timestamp - b.timestamp))) as TransactionHistory[];
 				const usdPriceEth = Big(ethPrice.data?.priceOracle.usdPriceEth as string).div(1e18).toFixed(7);
 				const updatedList = newList.map((x) => {

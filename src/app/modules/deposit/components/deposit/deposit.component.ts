@@ -272,6 +272,7 @@ export class DepositComponent extends TransactionPageClass implements OnInit, On
     setMax(percent: number): void {
         let value = this.util.getAsNumber(this.balance, this.reserve.decimals);
         value = value * (percent / 100);
-        this.amountControl.patchValue(value);
+        value = Big(value).minus(0.001).toNumber() // Fix for gas
+        this.amountControl.patchValue(value.toFixed(this.reserve.decimals).toString());
     }
 }

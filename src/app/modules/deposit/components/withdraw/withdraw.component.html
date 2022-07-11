@@ -58,14 +58,14 @@
             </div>
             <div class="asset-input" [class.invalid]="amountControl?.invalid && amountControl.touched">
                 <div class="head">
-                    <div class="key">Available to withdraw</div>
+                    <div class="key">Available to withdraw:</div>
                     <div class="value">
-                        <b>{{userReserve?.scaledATokenBalance | bigNum: reserve.decimals}}</b> {{reserve?.symbol}}</div>
+                        <b>{{availableToWithdraw.toString() | bigNum: reserve.decimals: 3 }}</b> {{reserve?.symbol}}</div>
                 </div>
                 <nz-input-group [nzSuffix]="suffixCurrency" [nzPrefix]="prefixIcon">
                     <input
                             maxAmount
-                            [maxAvailable]="userReserve?.scaledATokenBalance"
+                            [maxAvailable]="availableToWithdraw"
                             [decimals]="reserve.decimals"
                             [control]="amountControl"
                             [formControl]="amountControl"

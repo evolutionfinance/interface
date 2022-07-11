@@ -48,8 +48,8 @@ export class CalculationsUtil {
 				const tokens = this.getAsNumber(x.scaledATokenBalance, x.reserve.decimals);
 				total += (tokens * price) * LTV;
 			}
-			if (Number(x.scaledVariableDebt) > 0) {
-				const tokens = this.getAsNumber(x.scaledVariableDebt, x.reserve.decimals);
+			if (Number(x.currentTotalDebt) > 0) {
+				const tokens = this.getAsNumber(x.currentTotalDebt, x.reserve.decimals);
 				total -= tokens * price;
 			}
 			return total;
@@ -138,5 +138,17 @@ export class CalculationsUtil {
 		}
 		return availableToYou;
 	}
+
+  static getTotalDebtInETH(userReserves: UserReserve[]): number {
+    return userReserves.reduce((total, x) => {
+        const priceInEth = this.getAsNumber(x.reserve.price.priceInEth, 18);
+        const debtInToken = x.currentTotalDebt;
+        if (+debtInToken > 0) {
+          const tokens = this.getAsNumber(debtInToken, x.reserve.decimals);
+          total += (tokens * priceInEth);
+        }
+        return total;
+      }, 0);
+  }
 
 }

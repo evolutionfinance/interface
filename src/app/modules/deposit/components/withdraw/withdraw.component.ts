@@ -11,7 +11,7 @@ import {FormControl, Validators} from '@angular/forms';
 import {TransactionConfig, TransactionConfigStep} from '../../../../core/interfaces/transaction-config.interface';
 import {UserReserve} from '../../../../core/interfaces/user-reserves-response.interface';
 import {ReservesService} from '../../../../services/reserves.service';
-import {APPROVE_ABI, LENDING_POOL_ABI, V_TOKEN_ABI, WETH_GATEWAY_ABI} from '../../../../core/abi/abi';
+import {APPROVE_ABI, LENDING_POOL_ABI, minABI, V_TOKEN_ABI, WETH_GATEWAY_ABI} from '../../../../core/abi/abi';
 import {environment} from '../../../../../environments/environment';
 import {TransactionError} from '../../../../core/interfaces/metamask.interface';
 import {Web3Service} from '../../../../services/web3.service';
@@ -21,6 +21,7 @@ import {CompositionsService} from '../../../../services/compositions.service';
 import {INFO_MODAL, InfoModal} from '../../../../core/config/info-modal';
 import {TransactionPageClass} from '../../../../core/classes/transaction-page.class';
 import {APPROVE_AMOUNT} from '../../../../core/constants/constans';
+import BigNumber from 'bignumber.js';
 
 @Component({
 	selector: 'app-withdraw',
@@ -35,6 +36,7 @@ export class WithdrawComponent extends TransactionPageClass implements OnInit, O
 	balance: string;
 	balanceInUsd: number;
 	currentTransactionsStatus = TransactionFlowStep.SUBMIT;
+  isMaxAmount: boolean = false;
 	transactionConfig: TransactionConfig = {
 		steps: [
 			{
@@ -60,6 +62,8 @@ export class WithdrawComponent extends TransactionPageClass implements OnInit, O
 	INFO: InfoModal = INFO_MODAL;
 	collateralTotal: number = 0;
 	collateralEthereumEquivalent: string = '0';
+	availableToWithdraw: string = '0';
+	availableToWithdrawInETH: string = '0';
 
 	constructor(private route: ActivatedRoute,
 				private reservesService: ReservesService,
@@ -90,12 +94,51 @@ export class WithdrawComponent extends TransactionPageClass implements OnInit, O
 				filter(list => !!list.length),
 				takeUntil(this.destroyed$)
 			)
-			.subscribe((reserves: UserReserve[]) => {
+			.subscribe( async (reserves: UserReserve[]) => {
 				this.userReserves = reserves;
 				this.userReserve = reserves.find((x) => x.reserve.symbol === this.reserve.symbol) as UserReserve;
 				this.healthFactor = this.util.getCurrentHealthFactor(reserves);
 				this.collateralTotal = this.util.getTotalCollateralInUsd(reserves);
 				this.collateralEthereumEquivalent = Big(this.userReserve.reserve.price.priceInEth as string).div(1e18).toFixed(7);
+
+				if (this.userReserve) {
+					const totalBorrowsMarketReferenceCurrency = this.util.getTotalDebtInETH(this.userReserves);
+					const aTokenContract = this.web3.createContract(minABI, this.reserve.aToken.id);
+					const account = this.accountService.getAccount().getValue() as string;
+					const available = await aTokenContract.methods.balanceOf(account).call({from: account});
+					const priceInEth = this.util.getAsNumber(this.userReserve.reserve.price.priceInEth, this.userReserve.reserve.decimals);
+					let maxUserAmountToWithdraw = BigNumber.min(new BigNumber(this.reserve.availableLiquidity), new BigNumber(available)).toString(10);
+					let maxCollateralToWithdrawInETH = new BigNumber('0');
+					if (
+						this.userReserve.usageAsCollateralEnabledOnUser &&
+						this.reserve.usageAsCollateralEnabled &&
+						totalBorrowsMarketReferenceCurrency !== 0
+					) {
+						const currentHF = this.util.getCurrentHealthFactor(reserves);
+						const excessHF = new BigNumber(currentHF).minus('1');
+						if (excessHF.gt('0')) {
+						const formatedLiquidationThreshold = new BigNumber(this.reserve.reserveLiquidationThreshold ).div(10000);
+						maxCollateralToWithdrawInETH = excessHF
+							.multipliedBy(Number(totalBorrowsMarketReferenceCurrency))
+							// because of the rounding issue on the contracts side this value still can be incorrect
+							.div(formatedLiquidationThreshold.plus(0.01).toString())
+							.multipliedBy('0.99');
+						}
+						maxUserAmountToWithdraw = BigNumber.min(
+						maxUserAmountToWithdraw,
+						maxCollateralToWithdrawInETH.dividedBy(priceInEth)
+						).toString();
+					} else {
+						maxUserAmountToWithdraw = new BigNumber(this.util.getAsNumber(maxUserAmountToWithdraw.toString(), this.reserve.decimals)).toString();
+					}
+					maxUserAmountToWithdraw = BigNumber.max(maxUserAmountToWithdraw, 0).toString();
+
+					const divider = Math.pow(10, this.reserve.decimals);
+					this.availableToWithdrawInETH = maxUserAmountToWithdraw;
+					this.availableToWithdraw = Big(maxUserAmountToWithdraw).mul(divider).round().toFixed();
+					console.log('this.availableToWithdraw!!!', this.availableToWithdraw);
+
+				}
 
 				this.compositionConfig = this.compositionsService.buildCollateralComposition(reserves, this.util.getTotalCollateralInUsd(reserves));
 				if (this.userReserve) {
@@ -103,7 +146,7 @@ export class WithdrawComponent extends TransactionPageClass implements OnInit, O
 						[
 							Validators.required,
 							Validators.min(0.000000001),
-							Validators.max(this.util.getAsNumber(this.userReserve.scaledATokenBalance, this.reserve.decimals))
+							Validators.max(this.util.getAsNumber(this.availableToWithdraw, this.reserve.decimals))
 						]
 					);
 				}
@@ -117,20 +160,24 @@ export class WithdrawComponent extends TransactionPageClass implements OnInit, O
 
 	private checkIfApproveNeed(): void {
 		if (this.reserve.symbol === 'ETH') {
-			this.transactionConfig.steps.unshift({
-				name: 'Approve',
-				currentStatus: TransactionStepStatus.DEFAULT,
-				type: TransactionFlowStep.APPROVE
-			});
+      const approve = {
+        name: 'Approve',
+        currentStatus: TransactionStepStatus.DEFAULT,
+        type: TransactionFlowStep.APPROVE
+      };
+      if (!this.transactionConfig.steps.some(item => item.name === approve.name)) {
+        this.transactionConfig.steps.unshift(approve);
+      }
 			this.currentTransactionsStatus = TransactionFlowStep.APPROVE;
 		}
 		this.currentFlowStep = FlowSteps.TRANSACTION_DETAILS;
 	}
 
 	setMax(percent: number): void {
-		let value = this.util.getAsNumber(this.userReserve.scaledATokenBalance, this.reserve.decimals);
+		let value = this.util.getAsNumber(this.availableToWithdraw, this.reserve.decimals);
 		value = value * (percent / 100);
-		this.amountControl.patchValue(value);
+    	this.isMaxAmount = percent === 100;
+		this.amountControl.patchValue(value.toFixed(this.reserve.decimals).toString());
 	}
 
 	checkAmount(): void {
@@ -143,7 +190,7 @@ export class WithdrawComponent extends TransactionPageClass implements OnInit, O
 			this.userReserves,
 			this.reserve,
 			amount,
-			'scaledATokenBalance');
+			'currentATokenBalance');
 		this.checkIfApproveNeed();
 	}
 
@@ -151,14 +198,15 @@ export class WithdrawComponent extends TransactionPageClass implements OnInit, O
 		const asset = this.reserve.underlyingAsset;
 		const account = this.accountService.getAccount().getValue() as string;
 		const amount = this.amountControl.value;
-		const formattedAmount = Big(amount * Math.pow(10, this.reserve.decimals)).round().toString();
+		const formattedAmount = Big(amount * Math.pow(10, 18)).round().toString();
+		const percentageFormattedAmount = Big(formattedAmount).plus(Big(formattedAmount).div(100).times(5)).round().toFixed().toString();
 		const currentStep = this.getStep(TransactionFlowStep.SUBMIT);
 		const lastStep = this.getStep(TransactionFlowStep.SUCCESS);
 
 		if (this.reserve.symbol === 'ETH') {
-			this.createETHWithdraw(formattedAmount, account, currentStep, lastStep);
+			this.createETHWithdraw(this.availableToWithdraw, account, currentStep, lastStep);
 		} else {
-			this.createERC20Withdraw(asset, formattedAmount, account, currentStep, lastStep);
+			this.createERC20Withdraw(asset, this.availableToWithdraw, account, currentStep, lastStep);
 		}
 
 	}

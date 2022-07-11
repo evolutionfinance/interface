@@ -20,8 +20,9 @@ export class MaxAmountDirective implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.sub = (this.control as FormControl).valueChanges.subscribe((v: number) => {
-            if (this.maxAvailable && !isNaN(Number(v) )) {
+            if (!isNaN(Number(v) )) {
                 const newValue = v;
+                console.log('v', v);
                 const max = this.util.getAsNumber(this.maxAvailable, this.decimals);
                 if (newValue > max) {
                     (this.control as FormControl).patchValue(max.toString(), {emitEvent: false});

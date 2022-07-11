@@ -1,8 +1,8 @@
 export const environment = {
   production: true,
   pool: '0x90340f21fbcd9f6fb31944a6665b42e708dd35bd',
-  mainGraphQLUrl: 'https://api.thegraph.com/subgraphs/name/rostyslavbortman/aaveforkmain',
-  graphQLWebsocketUrl: 'wss://api.thegraph.com/subgraphs/name/rostyslavbortman/aaveforkmain',
+  mainGraphQLUrl: 'https://api.thegraph.com/subgraphs/name/levon04/aaveforkevolution',
+  graphQLWebsocketUrl: 'wss://api.thegraph.com/subgraphs/name/levon04/aaveforkevolution',
   lendingPoolAddress: '0x472D155432862412D3fD1Aa23160A7bC03550448',
   WETHGateway: '0xB7D85f1b3E13A5f58463aEc3507c3e0Db5F10fb0',
   etherscanUrl: 'https://etherscan.io',

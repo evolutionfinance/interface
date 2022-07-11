@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   pool: '0xca6e28684f12d6f8829cd22643b68e704d8beada',
-  mainGraphQLUrl: 'https://api.thegraph.com/subgraphs/name/rostyslavbortman/aave-fork-2',
-  graphQLWebsocketUrl: 'wss://api.thegraph.com/subgraphs/name/rostyslavbortman/aave-fork-2',
+  mainGraphQLUrl: 'https://api.thegraph.com/subgraphs/name/levon04/aaveforktest',
+  graphQLWebsocketUrl: 'wss://api.thegraph.com/subgraphs/name/levon04/aaveforktest',
   lendingPoolAddress: '0xC7aa02A3982f40da9001AE1063720fc323258E6e',
   WETHGateway: '0xFdF9FC2122F9201848c7788cddE7Be5A98183860',
   liquidationApiUrl: 'https://testnet.aave.com/api-kovan/',

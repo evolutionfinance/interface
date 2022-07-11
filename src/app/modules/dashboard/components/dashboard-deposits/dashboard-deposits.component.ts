@@ -7,6 +7,7 @@ import {UserReserve} from '../../../../core/interfaces/user-reserves-response.in
 import {WalletBalance} from '../../../../core/interfaces/wallet-balance.interface';
 import {ReservesService} from '../../../../services/reserves.service';
 import {AccountService} from '../../../../services/account.service';
+import Big from 'big.js';
 import {Router} from '@angular/router';
 import {CalculationsUtil} from '../../../../core/util/util-calculations.class';
 import {CompositionPart} from '../../../../core/interfaces/composition-config.interface';
@@ -102,7 +103,15 @@ export class DashboardDepositsComponent implements OnInit, OnDestroy {
     private getUserReserves(): void {
         this.reservesService.getUserReserves()
             .pipe(
-                map((list: UserReserve[]) => list.filter(item => +item.scaledATokenBalance > 0)),
+                map((list: UserReserve[]) => list.filter(item => {
+                    const divider = Math.pow(10, item.reserve.decimals);
+                    if(item.reserve.symbol !== 'ETH') {
+                        const formattedBalance = Big(item.currentATokenBalance).mul(divider).round().toNumber();
+                        return formattedBalance > 100000000;
+                    } else {
+                        return +item.currentATokenBalance > 100000000;
+                    }
+                })),
                 takeUntil(this.destroyed$)
             )
             .subscribe(list => {

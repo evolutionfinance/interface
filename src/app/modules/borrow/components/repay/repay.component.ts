@@ -64,7 +64,7 @@ export class RepayComponent implements OnInit, OnDestroy {
 				this.collateralTotal = this.util.getTotalCollateralInUsd(reserves);
 				this.compositionConfig = this.compositionsService.buildCollateralComposition(reserves, this.util.getTotalCollateralInUsd(reserves));
 				this.userReserve = reserves.find((x) => x.reserve.symbol === this.reserve.symbol) as UserReserve;
-				this.userReserveInUsd = this.util.getAsNumber(this.userReserve.scaledVariableDebt, this.reserve.decimals) * +this.userReserve.reserve.priceInUsd;
+				this.userReserveInUsd = this.util.getAsNumber(this.userReserve.currentTotalDebt, this.reserve.decimals) * +this.userReserve.reserve.priceInUsd;
 			});
 	}
 

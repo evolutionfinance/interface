@@ -172,8 +172,9 @@ export class BorrowComponent extends TransactionPageClass implements OnInit {
 
 
 	setMax(percent: number): void {
-		const value = this.availableToBorrow * (percent / 100);
-    this.amountControl.patchValue(value.toFixed(this.reserve.decimals));
+		let value =  new Big(this.availableToBorrow.toString()).toNumber();
+		value = value * (percent / 100);
+    	this.amountControl.patchValue(value.toFixed(this.reserve.decimals));
 	}
 
 	checkAmount(): void {
@@ -197,7 +198,6 @@ export class BorrowComponent extends TransactionPageClass implements OnInit {
 		const formattedAmount = Big(amount * Math.pow(10, this.reserve.decimals)).round().toString();
 		const currentStep = this.getStep(TransactionFlowStep.SUBMIT);
 		const lastStep = this.getStep(TransactionFlowStep.SUCCESS);
-console.log('formattedAmount', amount, formattedAmount);
 		if (this.reserve.symbol === 'ETH') {
 			this.createETHBorrow(formattedAmount, account, currentStep, lastStep);
 		} else {

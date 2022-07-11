@@ -13,6 +13,7 @@ export interface Liquidation {
 		underlyingAsset: string;
 		color?: string;
 		priceInUsd: string;
+		liquidityIndex: string;
 		assetPictureUrl?: string;
 		__typename: string;
 	};

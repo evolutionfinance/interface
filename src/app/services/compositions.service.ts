@@ -48,8 +48,8 @@ export class CompositionsService {
 	buildBorrowingComposition(list: UserReserve[], total: number): CompositionPart[] {
 		const composition: CompositionPart[] = [];
 		list.forEach(x => {
-			if (+x.scaledVariableDebt) {
-				const assetTotalInUsd = this.util.getAsNumber(x.scaledVariableDebt, x.reserve.decimals) * +x.reserve.priceInUsd;
+			if (+x.currentTotalDebt) {
+				const assetTotalInUsd = this.util.getAsNumber(x.currentTotalDebt, x.reserve.decimals) * +x.reserve.priceInUsd;
 				composition.push({
 					pictureUrl: x.reserve.assetPictureUrl,
 					label: x.reserve.symbol,

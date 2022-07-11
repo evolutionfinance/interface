@@ -18,6 +18,8 @@ import Big from 'big.js';
 import {ReservesService} from '../../../../services/reserves.service';
 import {UserReserve} from '../../../../core/interfaces/user-reserves-response.interface';
 import {TransactionPageClass} from '../../../../core/classes/transaction-page.class';
+import {constants} from 'ethers';
+// import {LendingPool} from '@aave/contract-helpers';
 
 @Component({
 	selector: 'app-repay-from-wallet',
@@ -35,6 +37,7 @@ export class RepayFromWalletComponent extends TransactionPageClass implements On
 	util = CalculationsUtil;
 	userReserve: UserReserve;
 	emptyState: boolean = false;
+  	isMaxAmount: boolean = false;
 	transactionConfig: TransactionConfig = {
 		steps: [
 			{
@@ -67,7 +70,7 @@ export class RepayFromWalletComponent extends TransactionPageClass implements On
 	ngOnInit(): void {
 		this.reserve = (this.route.parent as ActivatedRoute).snapshot.data.reserve as MarketReserve;
 		this.getAccountBalance();
-    this.checkIfApproveNeed();
+    	this.checkIfApproveNeed();
 		this.reservesService.getUserReserves()
 			.pipe(
 				takeUntil(this.destroyed$)
@@ -109,22 +112,20 @@ export class RepayFromWalletComponent extends TransactionPageClass implements On
 				this.balance = wallet[this.reserve.symbol];
 				this.emptyState = Number(this.balance) === 0;
 				this.checkAmountToRepay();
-				if (this.balance) {
-					this.amountControl.setValidators([
-							Validators.required,
-							Validators.min(0.000000001),
-							Validators.max(this.util.getAsNumber(this.balance, this.reserve.decimals))
-						]
-					);
-				}
 			});
 	}
 
 	private checkAmountToRepay(): void {
 		if (this.balance && this.userReserve) {
 			const balance = +this.balance;
-			const available = +this.userReserve.scaledVariableDebt;
+			const available = +this.userReserve.currentTotalDebt;
 			this.availableToRepay = Math.min(balance, available);
+
+			this.amountControl.setValidators([
+				Validators.required,
+				Validators.min(0.000000001),
+				Validators.max(this.availableToRepay)
+			]);
 		}
 	}
 
@@ -135,10 +136,10 @@ export class RepayFromWalletComponent extends TransactionPageClass implements On
 
 
 	setMax(percent: number): void {
-		let value = this.util.getAsNumber(this.availableToRepay.toString(), this.reserve.decimals);
+		let value =  new Big(this.availableToRepay.toString()).toNumber();
 		value = value * (percent / 100);
-    console.log('value', value);
-		this.amountControl.patchValue(value);
+		this.isMaxAmount = percent === 100;
+		this.amountControl.patchValue(value.toString());
 	}
 
 	checkAmount(): void {
@@ -147,8 +148,10 @@ export class RepayFromWalletComponent extends TransactionPageClass implements On
 			this.amountControl.markAsTouched();
 			return;
 		}
-    this.amountControl.setValue(Number(this.amountControl.value).toFixed(this.reserve.decimals).toString());
-		this.remainingToRepay.inCoins = this.util.getAsNumber(this.userReserve.scaledVariableDebt, this.userReserve.reserve.decimals) - this.amountControl.value;
+		
+		this.amountControl.setValue(new Big(this.amountControl.value).toString());
+		const inCoins = this.util.getAsNumber(this.userReserve.currentTotalDebt, this.userReserve.reserve.decimals) - this.amountControl.value;
+		this.remainingToRepay.inCoins = inCoins > 0 ? inCoins : 0;
 		this.remainingToRepay.inUsd = this.remainingToRepay.inCoins * +this.userReserve.reserve.priceInUsd;
 		this.currentStep = FlowSteps.TRANSACTION_DETAILS;
 	}
@@ -158,22 +161,15 @@ export class RepayFromWalletComponent extends TransactionPageClass implements On
 		const account = this.accountService.getAccount().getValue() as string;
 		const currentStep = this.getStep(TransactionFlowStep.SUBMIT);
 		const amount = this.amountControl.value;
-    let formattedAmount = Big(amount * Math.pow(10, this.reserve.decimals)).round().toString();
-    if (formattedAmount === this.availableToRepay.toString()) {
-      const percent = Big(this.reserve.variableBorrowRate).div(Big(Math.pow(10, 25))).round(2).toString();
-      let amountWithPercent = Big(Big(amount).mul(percent).div(100).toNumber());
-      formattedAmount = Big(formattedAmount).plus(amountWithPercent).toString();
-      if (this.reserve.symbol === 'ETH') {
-        formattedAmount = Big(amount).plus(amountWithPercent).toString();
-      }
-      formattedAmount = Big(+ formattedAmount * Math.pow(10, this.reserve.decimals)).round().toString();
-    }
+		let formattedAmount = amount;
 		const lastStep = this.getStep(TransactionFlowStep.SUCCESS);
-
+		formattedAmount = Big(amount * Math.pow(10, this.reserve.decimals)).round().toString();
+		const percentageFormattedAmount = Big(formattedAmount).plus(Big(formattedAmount).div(100).times(10)).round().toFixed().toString();
+		
 		if (this.reserve.symbol === 'ETH') {
-			this.createETHRepay(formattedAmount, account, currentStep, lastStep);
+			this.createETHRepay(percentageFormattedAmount, account, currentStep, lastStep);
 		} else {
-			this.createERC20repay(asset, formattedAmount, account, currentStep, lastStep);
+			this.createERC20repay(asset, percentageFormattedAmount, account, currentStep, lastStep);
 		}
 	}
 
@@ -200,6 +196,7 @@ export class RepayFromWalletComponent extends TransactionPageClass implements On
 	}
 
 	private createERC20repay(asset: string, formattedAmount: string, account: string, currentStep: TransactionConfigStep, lastStep: TransactionConfigStep): void {
+    console.log('createERC20repay', formattedAmount);
 		const contract = this.web3.createContract(LENDING_POOL_ABI, environment.lendingPoolAddress);
 		contract.methods.repay(
 			asset,
