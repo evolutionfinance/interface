@@ -1,0 +1,42 @@
+@import "variables";
+
+.transaction-details {
+  width: 100%;
+
+  .details {
+    border: 1px solid var(--textColor);
+    background-color: var(--contentBackground);
+    padding: 23px 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+
+    .col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      .value {
+        margin-bottom: 10px;
+        font-size: 16px;
+      }
+
+      .sub-total {
+        font-size: 14px;
+      }
+    }
+  }
+
+
+  .asset-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    margin-right: 10px;
+  }
+
+
+  //.card {
+  //  border-color: 1px solid $black;
+  //  background-color: #ffffff;
+  //}
+}

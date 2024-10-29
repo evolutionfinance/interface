@@ -1,0 +1,246 @@
+<div class="wrapper" [ngClass]="{'small-sidebar': isSidebarSmall,
+                                 'dark-theme': isDarkTheme$ | async,
+                                 'mobile-sidebar-open': isMobileSidebarOpen}">
+    <div class="mobile-header">
+        <span>{{mobileTitle$ | async}}</span>
+        <img src="assets/icons/burger.svg" class="pointer" (click)="toggleMobileSidebar()"/>
+    </div>
+    <div class="mobile-sidebar sidebar">
+        <div class="close-container">
+            <img src="assets/icons/close.svg" class="pointer" (click)="toggleMobileSidebar()"/>
+        </div>
+        <ul class="menu">
+            <li>
+                <a routerLink="/markets" routerLinkActive="active" (click)="toggleMobileSidebar()">
+                    <i nz-icon>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19.4148 20H4.68975C4.30888 20 4 19.6913 4 19.3105C4 18.9296 4.30888 18.6203 4.68975 18.6203H19.4148C19.7957 18.6203 20.1045 18.9294 20.1045 19.3102C20.1045 19.6911 19.7957 20 19.4148 20ZM19.0621 16.5977H16.6178C16.1821 16.5977 15.7411 16.2751 15.7411 15.6595V7.09182C15.7411 6.57197 16.1097 6.19463 16.6178 6.19463H19.0621C19.477 6.19463 19.8971 6.50268 19.8971 7.09182V15.6595C19.8971 16.304 19.4642 16.5977 19.0621 16.5977ZM17.1208 15.2182H18.5176V7.57413H17.1208V15.2182ZM7.58013 16.5977H5.1565C4.73933 16.5977 4.29021 16.2909 4.29021 15.6175V10.1931C4.29021 9.51974 4.73933 9.21293 5.1565 9.21293H7.58013C8.00207 9.21293 8.45658 9.51974 8.45658 10.1931V15.6178C8.45658 16.2911 8.00207 16.5977 7.58013 16.5977ZM5.66992 15.2182H7.07708V10.5924H5.67013L5.66992 15.2182ZM13.3263 16.5152H10.8716C10.5575 16.5152 10.0262 16.3 10.0262 15.4933V4.02166C10.0262 3.21512 10.5577 3 10.8716 3H13.3263C13.6481 3 14.1924 3.21512 14.1924 4.02166V15.4933C14.1924 16.3 13.6481 16.5152 13.3263 16.5152ZM11.4057 15.1354H12.8129V4.3795H11.4057V15.1354Z"
+                                  fill="white" stroke="white" stroke-width="0.5"/>
+                        </svg>
+                    </i>
+                    <span>Markets</span>
+                </a>
+                <a routerLink="/dashboard" routerLinkActive="active" (click)="toggleMobileSidebar()">
+                    <i nz-icon nzType="appstore" nzTheme="outline"></i><span>My Dashboard</span>
+                </a>
+                <a routerLink="/deposit" routerLinkActive="active" (click)="toggleMobileSidebar()">
+                    <i nz-icon nzType="download" nzTheme="outline"></i><span>Deposit</span>
+                </a>
+                <a routerLink="/borrow" routerLinkActive="active" (click)="toggleMobileSidebar()">
+                    <i nz-icon nzType="dollar" nzTheme="outline"></i><span>Borrow</span>
+                </a>
+                <a routerLink="/swap" routerLinkActive="active" (click)="toggleMobileSidebar()" class="desktop-only">
+                    <i nz-icon>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                  d="M7.47595 9.18103C8.17136 7.30235 9.91117 6 11.8966 6C12.9629 6 13.9483 6.37 14.7449 7.00187C15.095 7.27964 15.4086 7.60808 15.6751 7.97766C15.8361 8.20084 15.9798 8.43885 16.104 8.68949C16.3492 9.18436 16.9491 9.38675 17.444 9.14155C17.9388 8.89635 18.1412 8.2964 17.896 7.80153C17.723 7.45231 17.5224 7.12 17.2972 6.80773C16.9244 6.29084 16.4837 5.82839 15.9878 5.43501C14.8565 4.53759 13.4376 4 11.8966 4C8.86823 4 6.34887 6.05479 5.4791 8.84909L4.72241 8.05853C4.34053 7.65956 3.70751 7.6457 3.30854 8.02759C2.90956 8.40948 2.89571 9.04249 3.27759 9.44147L5.43121 11.6915C5.73896 12.013 6.22215 12.0924 6.61663 11.8864L9.48813 10.3864C9.97765 10.1306 10.1672 9.52651 9.91147 9.03699C9.65576 8.54747 9.05163 8.35793 8.56211 8.61365L7.47595 9.18103ZM16.5241 14.819C15.8286 16.6977 14.0888 18 12.1034 18C11.0371 18 10.0517 17.63 9.25514 16.9981C8.90499 16.7204 8.59144 16.3919 8.3249 16.0223C8.16393 15.7992 8.02023 15.5612 7.89604 15.3105C7.65084 14.8156 7.05089 14.6132 6.55602 14.8584C6.06116 15.1037 5.85876 15.7036 6.10396 16.1985C6.277 16.5477 6.47756 16.88 6.70277 17.1923C7.07557 17.7092 7.51629 18.1716 8.01219 18.565C9.14346 19.4624 10.5624 20 12.1034 20C15.1318 20 17.6511 17.9452 18.5209 15.1509L19.2776 15.9415C19.6595 16.3404 20.2925 16.3543 20.6915 15.9724C21.0904 15.5905 21.1043 14.9575 20.7224 14.5585L18.5688 12.3085C18.261 11.987 17.7779 11.9076 17.3834 12.1136L14.5119 13.6136C14.0224 13.8694 13.8328 14.4735 14.0885 14.963C14.3442 15.4525 14.9484 15.6421 15.4379 15.3864L16.5241 14.819Z"
+                                  fill="white"/>
+                        </svg>
+
+                    </i>
+                    <span>Swap</span>
+                </a>
+                <a routerLink="/ren-project" routerLinkActive="active">
+                    <i nz-icon>
+                        <svg width="20" height="22" viewBox="0 0 20 22" fill="none">
+                            <path d="M3.06087 4.5913L4.68696 3.73043L4.87826 4.11304L10.8087 0.669565L10.4261 0.382609L9.94783 0.0956521L9.75652 0L0 5.64348V5.83478L2.77391 4.30435L3.06087 4.5913ZM3.06087 8.22609L7.74783 5.45217L7.93913 5.83478L13.9652 2.3913L13.487 2.10435L13.0087 1.91304L12.8174 1.81739L0 9.18261V9.37391L2.77391 7.84348L3.06087 8.22609ZM3.06087 9.94783L9.27826 6.4087L9.46956 6.69565L15.4957 3.25217L15.0174 3.06087L14.5391 2.77391L14.3478 2.67826L0 10.9043V11.1913L2.77391 9.56522L3.06087 9.94783ZM3.06087 11.6696L10.8087 7.26957L11 7.55652L17.0261 4.2087L16.5478 3.92174L16.0696 3.63478L15.8783 3.53913L0 12.7217V12.913L2.77391 11.3826L3.06087 11.6696ZM3.06087 13.487L12.3391 8.13043L12.5304 8.51304L18.5565 5.06957L18.0783 4.78261L17.6957 4.5913L17.4087 4.4L0 14.4435V14.7304L2.77391 13.1043L3.06087 13.487ZM19.1304 5.45217L18.9391 5.26087L0 16.2609V16.4522L2.77391 14.9217L3.06087 15.3043L12.3391 9.85217L12.5304 10.2348L19.513 6.31304V5.64348L19.1304 5.45217ZM1.24348 17.6L2.77391 16.6435L2.96522 17.0261L12.3391 11.6696L12.5304 12.0522L19.513 8.03478V6.7913L0.956522 17.4087L1.24348 17.6ZM12.3391 13.487L12.5304 13.8696L19.513 9.75652V8.51304L2.48696 18.3652L2.77391 18.4609L4.30435 17.5043L4.5913 17.887L12.3391 13.487ZM4.30435 19.3217L5.93043 18.4609L6.12174 18.8435L12.3391 15.2087L12.5304 15.5913L19.513 11.5739V10.3304L4.01739 19.2261L4.30435 19.3217ZM5.83478 20.1826L7.46087 19.3217L7.65217 19.7043L12.3391 17.0261L12.5304 17.4087L19.513 13.3913V12.0522L5.54783 20.087L5.83478 20.1826ZM7.07826 20.9478L7.36522 21.1391L8.9913 20.1826L9.18261 20.5652L12.3391 18.7478L12.5304 19.1304L19.513 15.113V13.8696L7.07826 20.9478ZM8.89565 22L10.4261 21.0435L10.713 21.4261L12.3391 20.5652L12.5304 20.9478L19.513 16.9304V15.5913L8.70435 21.9043L8.89565 22ZM12.4348 1.53043L11.9565 1.24348L11.4783 1.05217L11.287 0.86087L0 7.36522V7.65217L2.77391 6.02609L3.06087 6.4087L6.21739 4.5913L6.4087 4.97391L12.4348 1.53043Z"
+                                  fill="white"/>
+                        </svg>
+                    </i>
+                    <span>Ren project</span>
+                </a>
+                <a routerLink="/history" routerLinkActive="active" *ngIf="account$ | async">
+                    <i nz-icon nzType="clock-circle" nzTheme="outline"></i><span>History</span>
+                </a>
+                <a routerLink="/liquidation" routerLinkActive="active" *ngIf="account$ | async">
+                    <i nz-icon>
+                        <svg width="17" height="20" viewBox="0 0 17 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15.754 3.91466L8.86337 1.05375C8.69075 0.982101 8.49672 0.982066 8.32414 1.05375L1.43351 3.91466C1.17107 4.02365 1 4.27987 1 4.56403V8.04187C1 12.8306 3.89438 17.1382 8.32804 18.9479C8.49834 19.0174 8.68914 19.0174 8.85947 18.9479C13.2931 17.1382 16.1875 12.8306 16.1875 8.04187V4.56403C16.1875 4.27987 16.0165 4.02365 15.754 3.91466ZM14.7813 8.04187C14.7813 12.1128 12.3906 15.8603 8.59376 17.5331C4.89834 15.905 2.40625 12.2231 2.40625 8.04187V5.03344L8.59376 2.46443L14.7813 5.03344V8.04187ZM7.81659 10.4119L10.8388 7.38975C11.1133 7.11518 11.5585 7.11515 11.8331 7.38975C12.1077 7.66436 12.1077 8.10954 11.8331 8.38411L8.31377 11.9034C8.03913 12.1781 7.59395 12.178 7.31941 11.9034L5.35439 9.93841C5.07978 9.6638 5.07978 9.21862 5.35439 8.94405C5.62899 8.66948 6.07418 8.66944 6.34875 8.94405L7.81659 10.4119Z"
+                                  fill="white" stroke="white" stroke-width="0.5"/>
+                        </svg>
+                    </i><span>Liquidation</span>
+                </a>
+                <a target="_blank" href="https://evolution-finance.gitbook.io/evolution-finance/">
+                    <i nz-icon nzType="question-circle" nzTheme="outline"></i>
+                    <span>FAQ</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bottom-menu">
+            <div class="legal-docs">
+                <a routerLinkActive="active" routerLink="/privacy-policy" (click)="toggleMobileSidebar()">
+                    <img src="assets/icons/privacy-policy.svg" alt="Privacy">
+                    <span>Privacy policy</span>
+                </a>
+                <a routerLinkActive="active" routerLink="/terms-of-use" (click)="toggleMobileSidebar()">
+                    <img src="assets/icons/terms-of-use.svg" alt="Terms">
+                    <span>Terms of use</span>
+                </a>
+            </div>
+
+            <div class="social">
+                <a href="https://twitter.com/evn_finance" target="_blank">
+                    <img src="assets/icons/twitter.svg" alt="Twitter">
+                </a>
+                <a href="https://t.me/evolutionfinance" target="_blank">
+                    <img src="assets/icons/telegram.svg" alt="Telegram ">
+                </a>
+                <a href="https://github.com/ferrumnet" target="_blank">
+                    <img src="assets/icons/github.svg" alt="GitHub">
+                </a>
+                <a href="https://www.reddit.com/r/EvolutionFinance/new" target="_blank">
+                    <img src="assets/icons/reddit.svg" alt="Reddit ">
+                </a>
+                <a href="https://medium.com/evolution-finance" target="_blank">
+                    <img src="assets/icons/medium.svg" alt="Medium">
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar">
+        <div class="wallet-block">
+            <button *ngIf="!(account$ | async)" class="evl-btn" (click)="connectWallet()">
+                Connect
+            </button>
+            <button *ngIf="(account$ | async)"
+                    nz-dropdown
+                    [nzDropdownMenu]="menu"
+                    class="evl-btn account">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="6" cy="6" r="6" fill="#51B700"/>
+                </svg>
+                <span>{{account$ | async}}</span>
+                <i nz-icon nzType="caret-down"></i>
+            </button>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+                <ul nz-menu>
+                    <li nz-menu-item (click)="disconnect()">Disconnect</li>
+                </ul>
+            </nz-dropdown-menu>
+        </div>
+        <div class="small-wallet">
+            <a>
+                <img src="assets/icons/wallet.svg" alt="Wallet" nz-dropdown
+                     [nzDropdownMenu]="connectMenu"
+                     [nzPlacement]="'topRight'">
+                <nz-dropdown-menu #connectMenu="nzDropdownMenu">
+                    <ul nz-menu>
+                        <li nz-menu-item (click)="connectWallet()"
+                            *ngIf="!(account$ | async); else disconnectContainer">Connect
+                        </li>
+                        <ng-template #disconnectContainer>
+                            <li nz-menu-item (click)="disconnect()">Disconnect</li>
+                        </ng-template>
+                    </ul>
+                </nz-dropdown-menu>
+            </a>
+        </div>
+        <ul class="menu">
+            <li>
+                <a routerLink="/markets" routerLinkActive="active">
+                    <i nz-icon>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19.4148 20H4.68975C4.30888 20 4 19.6913 4 19.3105C4 18.9296 4.30888 18.6203 4.68975 18.6203H19.4148C19.7957 18.6203 20.1045 18.9294 20.1045 19.3102C20.1045 19.6911 19.7957 20 19.4148 20ZM19.0621 16.5977H16.6178C16.1821 16.5977 15.7411 16.2751 15.7411 15.6595V7.09182C15.7411 6.57197 16.1097 6.19463 16.6178 6.19463H19.0621C19.477 6.19463 19.8971 6.50268 19.8971 7.09182V15.6595C19.8971 16.304 19.4642 16.5977 19.0621 16.5977ZM17.1208 15.2182H18.5176V7.57413H17.1208V15.2182ZM7.58013 16.5977H5.1565C4.73933 16.5977 4.29021 16.2909 4.29021 15.6175V10.1931C4.29021 9.51974 4.73933 9.21293 5.1565 9.21293H7.58013C8.00207 9.21293 8.45658 9.51974 8.45658 10.1931V15.6178C8.45658 16.2911 8.00207 16.5977 7.58013 16.5977ZM5.66992 15.2182H7.07708V10.5924H5.67013L5.66992 15.2182ZM13.3263 16.5152H10.8716C10.5575 16.5152 10.0262 16.3 10.0262 15.4933V4.02166C10.0262 3.21512 10.5577 3 10.8716 3H13.3263C13.6481 3 14.1924 3.21512 14.1924 4.02166V15.4933C14.1924 16.3 13.6481 16.5152 13.3263 16.5152ZM11.4057 15.1354H12.8129V4.3795H11.4057V15.1354Z"
+                                  fill="white" stroke="white" stroke-width="0.5"/>
+                        </svg>
+                    </i>
+                    <span>Markets</span>
+                </a>
+                <a routerLink="/dashboard" routerLinkActive="active">
+                    <i nz-icon nzType="appstore" nzTheme="outline"></i><span>My Dashboard</span>
+                </a>
+                <a routerLink="/deposit" routerLinkActive="active">
+                    <i nz-icon nzType="download" nzTheme="outline"></i><span>Deposit</span>
+                </a>
+                <a routerLink="/borrow" routerLinkActive="active">
+                    <i nz-icon nzType="dollar" nzTheme="outline"></i><span>Borrow</span>
+                </a>
+
+                <a routerLink="/swap" routerLinkActive="active">
+                    <i nz-icon>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                  d="M7.47595 9.18103C8.17136 7.30235 9.91117 6 11.8966 6C12.9629 6 13.9483 6.37 14.7449 7.00187C15.095 7.27964 15.4086 7.60808 15.6751 7.97766C15.8361 8.20084 15.9798 8.43885 16.104 8.68949C16.3492 9.18436 16.9491 9.38675 17.444 9.14155C17.9388 8.89635 18.1412 8.2964 17.896 7.80153C17.723 7.45231 17.5224 7.12 17.2972 6.80773C16.9244 6.29084 16.4837 5.82839 15.9878 5.43501C14.8565 4.53759 13.4376 4 11.8966 4C8.86823 4 6.34887 6.05479 5.4791 8.84909L4.72241 8.05853C4.34053 7.65956 3.70751 7.6457 3.30854 8.02759C2.90956 8.40948 2.89571 9.04249 3.27759 9.44147L5.43121 11.6915C5.73896 12.013 6.22215 12.0924 6.61663 11.8864L9.48813 10.3864C9.97765 10.1306 10.1672 9.52651 9.91147 9.03699C9.65576 8.54747 9.05163 8.35793 8.56211 8.61365L7.47595 9.18103ZM16.5241 14.819C15.8286 16.6977 14.0888 18 12.1034 18C11.0371 18 10.0517 17.63 9.25514 16.9981C8.90499 16.7204 8.59144 16.3919 8.3249 16.0223C8.16393 15.7992 8.02023 15.5612 7.89604 15.3105C7.65084 14.8156 7.05089 14.6132 6.55602 14.8584C6.06116 15.1037 5.85876 15.7036 6.10396 16.1985C6.277 16.5477 6.47756 16.88 6.70277 17.1923C7.07557 17.7092 7.51629 18.1716 8.01219 18.565C9.14346 19.4624 10.5624 20 12.1034 20C15.1318 20 17.6511 17.9452 18.5209 15.1509L19.2776 15.9415C19.6595 16.3404 20.2925 16.3543 20.6915 15.9724C21.0904 15.5905 21.1043 14.9575 20.7224 14.5585L18.5688 12.3085C18.261 11.987 17.7779 11.9076 17.3834 12.1136L14.5119 13.6136C14.0224 13.8694 13.8328 14.4735 14.0885 14.963C14.3442 15.4525 14.9484 15.6421 15.4379 15.3864L16.5241 14.819Z"
+                                  fill="white"/>
+                        </svg>
+
+                    </i>
+                    <span>Swap</span>
+                </a>
+
+                <a routerLink="/ren-project" routerLinkActive="active">
+                    <i nz-icon>
+                        <svg width="20" height="22" viewBox="0 0 20 22" fill="none">
+                            <path d="M3.06087 4.5913L4.68696 3.73043L4.87826 4.11304L10.8087 0.669565L10.4261 0.382609L9.94783 0.0956521L9.75652 0L0 5.64348V5.83478L2.77391 4.30435L3.06087 4.5913ZM3.06087 8.22609L7.74783 5.45217L7.93913 5.83478L13.9652 2.3913L13.487 2.10435L13.0087 1.91304L12.8174 1.81739L0 9.18261V9.37391L2.77391 7.84348L3.06087 8.22609ZM3.06087 9.94783L9.27826 6.4087L9.46956 6.69565L15.4957 3.25217L15.0174 3.06087L14.5391 2.77391L14.3478 2.67826L0 10.9043V11.1913L2.77391 9.56522L3.06087 9.94783ZM3.06087 11.6696L10.8087 7.26957L11 7.55652L17.0261 4.2087L16.5478 3.92174L16.0696 3.63478L15.8783 3.53913L0 12.7217V12.913L2.77391 11.3826L3.06087 11.6696ZM3.06087 13.487L12.3391 8.13043L12.5304 8.51304L18.5565 5.06957L18.0783 4.78261L17.6957 4.5913L17.4087 4.4L0 14.4435V14.7304L2.77391 13.1043L3.06087 13.487ZM19.1304 5.45217L18.9391 5.26087L0 16.2609V16.4522L2.77391 14.9217L3.06087 15.3043L12.3391 9.85217L12.5304 10.2348L19.513 6.31304V5.64348L19.1304 5.45217ZM1.24348 17.6L2.77391 16.6435L2.96522 17.0261L12.3391 11.6696L12.5304 12.0522L19.513 8.03478V6.7913L0.956522 17.4087L1.24348 17.6ZM12.3391 13.487L12.5304 13.8696L19.513 9.75652V8.51304L2.48696 18.3652L2.77391 18.4609L4.30435 17.5043L4.5913 17.887L12.3391 13.487ZM4.30435 19.3217L5.93043 18.4609L6.12174 18.8435L12.3391 15.2087L12.5304 15.5913L19.513 11.5739V10.3304L4.01739 19.2261L4.30435 19.3217ZM5.83478 20.1826L7.46087 19.3217L7.65217 19.7043L12.3391 17.0261L12.5304 17.4087L19.513 13.3913V12.0522L5.54783 20.087L5.83478 20.1826ZM7.07826 20.9478L7.36522 21.1391L8.9913 20.1826L9.18261 20.5652L12.3391 18.7478L12.5304 19.1304L19.513 15.113V13.8696L7.07826 20.9478ZM8.89565 22L10.4261 21.0435L10.713 21.4261L12.3391 20.5652L12.5304 20.9478L19.513 16.9304V15.5913L8.70435 21.9043L8.89565 22ZM12.4348 1.53043L11.9565 1.24348L11.4783 1.05217L11.287 0.86087L0 7.36522V7.65217L2.77391 6.02609L3.06087 6.4087L6.21739 4.5913L6.4087 4.97391L12.4348 1.53043Z"
+                                  fill="white"/>
+                        </svg>
+                    </i>
+                    <span>Ren project</span>
+                </a>
+
+                <a routerLink="/history" routerLinkActive="active" *ngIf="account$ | async">
+                    <i nz-icon nzType="clock-circle" nzTheme="outline"></i><span>History</span>
+                </a>
+                <a routerLink="/liquidation" routerLinkActive="active" *ngIf="account$ | async">
+                    <i nz-icon>
+                        <svg width="17" height="20" viewBox="0 0 17 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15.754 3.91466L8.86337 1.05375C8.69075 0.982101 8.49672 0.982066 8.32414 1.05375L1.43351 3.91466C1.17107 4.02365 1 4.27987 1 4.56403V8.04187C1 12.8306 3.89438 17.1382 8.32804 18.9479C8.49834 19.0174 8.68914 19.0174 8.85947 18.9479C13.2931 17.1382 16.1875 12.8306 16.1875 8.04187V4.56403C16.1875 4.27987 16.0165 4.02365 15.754 3.91466ZM14.7813 8.04187C14.7813 12.1128 12.3906 15.8603 8.59376 17.5331C4.89834 15.905 2.40625 12.2231 2.40625 8.04187V5.03344L8.59376 2.46443L14.7813 5.03344V8.04187ZM7.81659 10.4119L10.8388 7.38975C11.1133 7.11518 11.5585 7.11515 11.8331 7.38975C12.1077 7.66436 12.1077 8.10954 11.8331 8.38411L8.31377 11.9034C8.03913 12.1781 7.59395 12.178 7.31941 11.9034L5.35439 9.93841C5.07978 9.6638 5.07978 9.21862 5.35439 8.94405C5.62899 8.66948 6.07418 8.66944 6.34875 8.94405L7.81659 10.4119Z"
+                                  fill="white" stroke="white" stroke-width="0.5"/>
+                        </svg>
+                    </i><span>Liquidation</span>
+                </a>
+
+                <!-- <a target="_blank" href="https://evolution-finance.gitbook.io/evolution-finance/">
+                    <i nz-icon nzType="question-circle" nzTheme="outline"></i>
+                    <span>FAQ</span>
+                </a> -->
+
+            </li>
+        </ul>
+        <div class="bottom-menu">
+            <!-- <div class="legal-docs">
+                <a routerLinkActive="active" routerLink="/privacy-policy">
+                    <img src="assets/icons/privacy-policy.svg" alt="Privacy">
+                    <span>Privacy policy</span>
+                </a>
+                <a routerLinkActive="active" routerLink="/terms-of-use">
+                    <img src="assets/icons/terms-of-use.svg" alt="Terms">
+                    <span>Terms of use</span>
+                </a>
+            </div> -->
+
+            <div class="social">
+                <a href="https://twitter.com/evn_finance" target="_blank">
+                    <img src="assets/icons/twitter.svg" alt="Twitter">
+                </a>
+                <a href="https://t.me/evolutionfinance" target="_blank">
+                    <img src="assets/icons/telegram.svg" alt="Telegram ">
+                </a>
+                <a href="https://github.com/ferrumnet" target="_blank">
+                    <img src="assets/icons/github.svg" alt="GitHub">
+                </a>
+                <a href="https://www.reddit.com/r/EvolutionFinance/new" target="_blank">
+                    <img src="assets/icons/reddit.svg" alt="Reddit ">
+                </a>
+                <a href="https://medium.com/evolution-finance" target="_blank">
+                    <img src="assets/icons/medium.svg" alt="Medium">
+                </a>
+            </div>
+            <button class="hide" (click)="toggleSidebar()">
+                <i nz-icon nzType="double-left" nzTheme="outline" class="left-arrow"></i>
+                <i nz-icon nzType="double-right" nzTheme="outline" class="right-arrow"></i>
+            </button>
+        </div>
+    </div>
+    <div class="main-content-wrapper">
+        <div class="main-content">
+            <router-outlet></router-outlet>
+        </div>
+        <div class="theme-container">
+            <span class="title">Dark theme: {{(isDarkTheme$ | async) ? 'on' : 'off'}}</span>
+            <nz-switch [(ngModel)]="isDark"
+                       (ngModelChange)="changeTheme()"></nz-switch>
+        </div>
+    </div>
+</div>
+

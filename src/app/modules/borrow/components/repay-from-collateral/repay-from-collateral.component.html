@@ -1,0 +1,199 @@
+<div class="content-wrapper">
+    <ng-container *ngIf="currentFlowStep === steps.USER_INPUT">
+        <div class="deposit-step">
+            <div class="title">
+                Repay
+            </div>
+            <div class="message">
+                Select an asset and amount to repay
+            </div>
+            <div class="swap-row">
+                <div class="select-holder" [formGroup]="borrowedForm">
+                    <div class="label">Borrowed asset</div>
+                    <nz-select nzShowSearch nzPlaceHolder="Asset"
+                               formControlName="borrowedReserve">
+                        <nz-option nzCustomContent
+                                   *ngFor="let uReserve of userReserves"
+                                   [nzValue]="uReserve"
+                                   (click)="resetAmount('from')"
+                                   [nzLabel]="uReserve.reserve.symbol">
+                            <img class="asset-icon" [src]="uReserve.reserve.assetPictureUrl" alt="">
+                            {{uReserve.reserve.symbol}}
+                        </nz-option>
+                    </nz-select>
+                </div>
+                <div class="input-holder">
+                    <div class="available">
+                        <span>Available</span>
+                        <b>
+                            {{
+							userBorrowedReserve?.currentTotalDebt  | bigNum: userBorrowedReserve?.reserve?.decimals : 4
+                            }}
+                        </b>
+                    </div>
+                    <nz-input-group [formGroup]="borrowedForm">
+                        <input maxAmount
+                               [maxAvailable]="userBorrowedReserve?.currentTotalDebt || 0"
+                               [decimals]="userBorrowedReserve?.reserve?.decimals"
+                               [control]="borrowedForm.get('amount')"
+                               formControlName="amount"
+                               nz-input type="number"
+                               placeholder="Amount">
+                    </nz-input-group>
+                    <div class="total green">
+                        = $ {{subtotalBorrowed | number: '1.0-2'}} (-2.3%)
+                    </div>
+                </div>
+
+                <div class="input-holder">
+                    <div class="available">
+                        <span>Available</span>
+                        <b>
+                            {{
+							    fromCollateral ?
+								(fromCollateral?.scaledATokenBalance  | bigNum: fromCollateral?.reserve?.decimals : 4) :
+                                0
+                            }}
+                        </b>
+                    </div>
+                    <nz-input-group [formGroup]="collateralForm">
+                        <input formControlName="amount"
+                               nz-input type="number"
+                               [disabled]="true"
+                               placeholder="Amount">
+                    </nz-input-group>
+                    <div class="total green">
+                        = $ {{subtotalCollateral | number: '1.0-2'}}
+                    </div>
+                </div>
+                <div class="select-holder" [formGroup]="collateralForm">
+                    <div class="label">Select collateral</div>
+                    <nz-select nzShowSearch
+                               formControlName="reserve"
+                               (ngModelChange)="calculateAmountTo($event)"
+                               nzPlaceHolder="Asset">
+                        <nz-option nzCustomContent
+                                   *ngFor="let uReserve of depositsList"
+                                   [nzValue]="uReserve"
+                                   (click)="resetAmount('from')"
+                                   [nzLabel]="uReserve.reserve.symbol">
+                            <img class="asset-icon" [src]="uReserve.reserve.assetPictureUrl" alt="">
+                            {{uReserve.reserve.symbol}}
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+            <div class="swap-details">
+                <div class="flex-row">
+                    <div class="key">New health factor</div>
+                    <div class="value green">
+                        <b>
+                            {{healthFactor | number: '1.2'}}
+                        </b>
+
+                        <i nz-icon nzType="double-right" nzTheme="outline"></i>
+                        <b>
+                            {{nextHealthFactor | number: '1.2'}}
+                        </b>
+
+                    </div>
+                </div>
+                <div class="flex-row red-icon">
+                    <div class="key">Max slippage
+                        <i nz-icon nzType="setting" nzTheme="outline" (click)="toggleSlippage()"></i>
+                    </div>
+                    <div class="value green"><b>{{slippageControl.value || 2}} %</b></div>
+                </div>
+                <div class="flex-row slippage-check" *ngIf="showSlippage">
+                    <div class="quick-select">
+                        <div class="quick-select-item" (click)="setMaxSlippage(0.1)">0.1%</div>
+                        <div class="quick-select-item" (click)="setMaxSlippage(0.5)">0.5%</div>
+                        <div class="quick-select-item" (click)="setMaxSlippage(1)">1%</div>
+                        <input maxAmount
+                               [maxAvailable]="30"
+                               [decimals]="0"
+                               [control]="slippageControl"
+                               [formControl]="slippageControl"
+                               placeholder="Custom"
+                               class="quick-select-item input">
+                    </div>
+                </div>
+                <div class="flex-row red-icon">
+                    <div class="key">Fees</div>
+                    <div class="value green"><b>0.3%</b></div>
+                </div>
+            </div>
+            <button class="evl-btn red" (click)="checkAmount()">Continue</button>
+            <button class="back" routerLink="/deposit">Go back</button>
+        </div>
+    </ng-container>
+
+    <div class="deposit-step" *ngIf="currentFlowStep === steps.TRANSACTION_DETAILS">
+        <div *ngIf="currentTransactionsStatus !== transactionConfig.steps[transactionConfig.steps.length - 1].type; else successContainer">
+            <div class="title">
+                Repay overview
+            </div>
+            <div class="message">
+                These are your transaction details. Make sure to check if this is correct before submitting.
+            </div>
+        </div>
+        <ng-template #successContainer>
+            <div>
+                <div class="title">
+                    Congratulations
+                </div>
+                <div class="message">
+                    Your action has been successfully executed
+                </div>
+            </div>
+        </ng-template>
+        <div class="transaction-details">
+            <div class="details stats">
+                <div class="flex-row">
+                    <div class="key">Amount to repay</div>
+                    <div class="col">
+                        <div class="value">
+                            <img class="asset-icon" [src]="userBorrowedReserve.reserve.assetPictureUrl" alt="">
+                            <b>{{borrowedForm?.value.amount }}</b> {{userBorrowedReserve.reserve.symbol}}
+                        </div>
+                        <div class="sub-total">
+                            $ {{subtotalBorrowed | number: '1.0-2'}}</div>
+                    </div>
+                </div>
+                <div class="flex-row">
+                    <div class="key">Amount collateral</div>
+                    <div class="col">
+                        <div class="value">
+                            <img class="asset-icon" [src]="fromCollateral.reserve?.assetPictureUrl" alt="">
+                            <b>{{collateralForm?.getRawValue()?.amount}}</b> {{fromCollateral.reserve?.symbol}}
+                        </div>
+                        <div class="sub-total">
+                            $ {{subtotalCollateral | number: '1.0-2'}} </div>
+                    </div>
+                </div>
+                <div class="flex-row ">
+                    <div class="key">Current health factor</div>
+                    <div class="value"><b class="green">{{healthFactor | number: '1.2'}}</b></div>
+                </div>
+                <div class="flex-row ">
+                    <div class="key">New health factor</div>
+                    <div class="value"><b class="green">{{nextHealthFactor | number: '1.2'}}</b></div>
+                </div>
+                <div class="flex-row ">
+                    <div class="key">Maximum slippage</div>
+                    <div class="value"><b class="green">{{slippageControl.value}}  %</b></div>
+                </div>
+                <div class="flex-row no-margin">
+                    <div class="key">Total Fees</div>
+                    <div class="value"><b class="green">0.3 %</b></div>
+                </div>
+            </div>
+            <app-transaction
+                    (approve)="approve()"
+                    (submit)="submit()"
+                    [currentFlowStep]="currentTransactionsStatus"
+                    [config]="transactionConfig"></app-transaction>
+        </div>
+        <button class="back" (click)="changeStep(steps.USER_INPUT)">Go back</button>
+    </div>
+</div>

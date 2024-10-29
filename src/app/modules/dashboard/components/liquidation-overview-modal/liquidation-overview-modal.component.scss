@@ -1,0 +1,40 @@
+.wrapper {
+  color: var(--textColor);
+
+  .head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    span:first-child {
+      font-size: 18px;
+    }
+
+    span:last-child {
+      font-size: 16px;
+    }
+
+    > span {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--textColor);
+    padding: 20px;
+
+    > div {
+      margin-bottom: 10px;
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    div:last-child {
+      margin: 20px 0;
+    }
+  }
+}

@@ -1,0 +1,58 @@
+<div class="content-wrapper">
+    <div class="deposit-step">
+        <div class="title">
+            Liquidation
+        </div>
+        <div class="message">
+            Your transaction details
+        </div>
+        <div class="transaction-details">
+            <div class="details stats">
+                <div class="flex-row">
+                    <div class="key">Debt to cover</div>
+                    <div class="col">
+                        <div class="value">
+                            <img class="asset-icon" [src]="liquidation?.principalReserve?.assetPictureUrl" alt="">
+                            <b>{{amount}}</b> {{liquidation?.principalReserve.symbol}}
+                        </div>
+                        <div class="sub-total" *ngIf="liquidation">
+                            $ {{amount * +liquidation.principalReserve.priceInUsd | number: '1.0-2'}}
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-row no-margin">
+                    <div class="key">
+                        Collateral to claim
+                    </div>
+                    <div class="col">
+                        <div class="value">
+                            <img [src]="collateral?.reserve.assetPictureUrl" class="asset-icon">
+                            <b>{{collateralAmount}}</b> {{collateral?.reserve.symbol}}
+                        </div>
+                        <div class="sub-total" *ngIf="collateral">
+                            $ {{+collateralAmount * +collateral.reserve.priceInUsd | number: '1.0-2'}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fee-container">
+            <div>
+                <span>
+                    Liquidation bonus<app-tooltip-info></app-tooltip-info>
+                </span>
+            </div>
+            <div>
+                <span *ngIf="collateral">
+                   {{collateralAmount * (collateral.reserve.reserveLiquidationBonus | indexToPercent: 4) | number: '1.0-5'}} {{collateral.reserve.symbol}}
+                    / $ {{collateralAmount * (collateral.reserve.reserveLiquidationBonus | indexToPercent: 4) * +collateral.reserve.priceInUsd | number: '1.0-2'}} USD
+                </span>
+            </div>
+        </div>
+        <app-transaction (submit)="submit()"
+                         (approve)="approve()"
+                         [currentFlowStep]="currentTransactionsStatus"
+                         [config]="transactionConfig"></app-transaction>
+        <button class="back" routerLink="/liquidation">Go back</button>
+    </div>
+</div>

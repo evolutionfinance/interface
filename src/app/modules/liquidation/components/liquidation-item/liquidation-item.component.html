@@ -1,0 +1,150 @@
+<nz-collapse>
+    <nz-collapse-panel
+            [nzExtra]="extraTpl"
+            [nzShowArrow]="false">
+        <div>
+            <div class="collapse-content">
+                <p class="bold">
+                    Collaterals
+                </p>
+                <div class="collaterals-container">
+                    <div *ngFor="let collateral of liquidation.user.reserves; let i = index"
+                         class="collaterals-content pointer"
+                         [ngClass]="{'selected': collateral.isSelected}"
+                         (click)="selectCollateral(collateral, i)">
+                        <div>
+                            <div class="collateral-amount">
+                                <div class="coin">
+                                    <img [src]="collateral.reserve.assetPictureUrl" alt="coin"/>
+                                    <span class="bold">
+                                        {{+collateral.scaledATokenBalance | bigNum: collateral.reserve.decimals | number: '1.0-2'}} {{collateral.reserve.symbol}}
+                                    </span>
+                                </div>
+                                <div class="usd">
+                                    <span>$ {{(+collateral.scaledATokenBalance | bigNum: collateral.reserve.decimals) * +collateral.reserve.priceInUsd | number: '1.0-2'}}
+                                        USD</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="liquidation">
+                            <span class="title">Liquidation bonus</span>
+                            <span class="bold">{{ +collateral.reserve.reserveLiquidationBonus | indexToPercent: 4 | percent}}</span>
+                        </div>
+                        <div class="corner-label"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="make-liquidate-container">
+                <div class="amount-container">
+                    <div class="asset-input">
+                        <nz-input-group [nzSuffix]="suffixCurrency" [nzPrefix]="prefixIcon">
+                            <input maxAmount
+                                   [maxAvailable]="maxToCoverInCoins"
+                                   [decimals]="0"
+                                   [control]="amount"
+                                   [formControl]="amount"
+                                   nz-input type="number"
+                                   placeholder="Amount">
+                        </nz-input-group>
+                        <ng-template #suffixCurrency>
+                            <button class="gradient-text inline" (click)="setMax()">MAX</button>
+                        </ng-template>
+                        <ng-template #prefixIcon>
+                            <img class="asset-icon" [src]="liquidation.principalReserve.assetPictureUrl">
+                        </ng-template>
+                    </div>
+                    <div class="amount-info-content">
+                        <span class="title">Maximum debt to cover </span>
+                        <div>
+                            <span class="bold">{{maxToCoverInCoins | number: '1.0-2'}}</span>
+                            {{liquidation.principalReserve.symbol}}
+                        </div>
+                    </div>
+                </div>
+                <div class="receive-container">
+                    <div class="receive-content">
+                        <span class="bold">You will receive</span>
+                        <div>
+                            <img class="asset-icon" [src]="selectedCollateral?.reserve.assetPictureUrl" alt="icon">
+                            <span class="bold">{{(receivedAmount || 0) | number: '1.0-2'}} {{selectedCollateral?.reserve.symbol}}</span>
+                        </div>
+                    </div>
+                    <div class="bonus-container">
+                        <div>
+                            <span>({{selectedCollateral.reserve.reserveLiquidationBonus | indexToPercent: 4 | percent}}
+                                ) Liquidation bonus</span>
+                            <img src="../../../../../assets/icons/info.svg" alt="icon">
+                        </div>
+                        <span>
+                            {{(receivedAmount * (selectedCollateral.reserve.reserveLiquidationBonus |  indexToPercent: 4) | number: '1.2')}}
+                            {{selectedCollateral?.reserve.symbol}}
+                        </span>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button class="evl-btn red" [disabled]="amount.invalid || amount.disabled" (click)="checkAmount()">
+                        Liquidate
+                    </button>
+                </div>
+            </div>
+        </div>
+        <ng-template #extraTpl>
+            <table>
+                <tr class="pointer">
+                    <td>
+                        <a class="icon" href="{{etherscanUrl}}/address/{{liquidation.user.id}}">
+                            <img src="../../../../../assets/icons/external-link.svg" alt="icon">
+                        </a>
+                    </td>
+                    <td>
+                        <span> {{formattedAddress}}</span>
+                    </td>
+                    <td>
+                        <div class="red bold">
+                            {{+liquidation.user.healthFactor | number: '1.0-2'}}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="amount">
+                            <div class="coin">
+                                <img [src]="liquidation.principalReserve.assetPictureUrl" alt="coin"/>
+                                <span class="bold">
+                                    {{debtToCover.coins | number: '1.0-2'}} {{liquidation.principalReserve.symbol}}
+                                </span>
+                            </div>
+                            <div class="usd">
+                                <span>$ {{debtToCover.usd | number: '1.0-2'}} USD</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="amount">
+                            <div class="coin">
+                                <img src="assets/icons/assets/ETH.svg" alt="coin"/>
+                                <span class="bold">
+                                    {{+liquidation.totalCollateralEth | number: '1.0-2'}} ETH
+                                </span>
+                            </div>
+                            <div class="usd">
+                                <span>$ {{+liquidation.totalCollateralUsd | number: '1.0-2'}} USD</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <app-composition-bar [config]="compositionConfig"></app-composition-bar>
+                        </div>
+                    </td>
+                    <td>
+                        <svg width="18" height="18" viewBox="0 0 18 18" class="active-collapse-icon">
+                            <path d="M9 0C7.21997 0 5.47991 0.527841 3.99987 1.51677C2.51983 2.50571 1.36628 3.91131 0.685088 5.55585C0.00389956 7.20038 -0.17433 9.00998 0.172937 10.7558C0.520203 12.5016 1.37737 14.1053 2.63604 15.364C3.89472 16.6226 5.49836 17.4798 7.24419 17.8271C8.99002 18.1743 10.7996 17.9961 12.4442 17.3149C14.0887 16.6337 15.4943 15.4802 16.4832 14.0001C17.4722 12.5201 18 10.78 18 9C18 7.8181 17.7672 6.64778 17.3149 5.55585C16.8626 4.46392 16.1997 3.47177 15.364 2.63604C14.5282 1.80031 13.5361 1.13738 12.4442 0.685084C11.3522 0.232792 10.1819 0 9 0ZM9 16.65C7.48698 16.65 6.00793 16.2013 4.74989 15.3607C3.49186 14.5201 2.51134 13.3254 1.93233 11.9275C1.35332 10.5297 1.20182 8.99151 1.497 7.50756C1.79217 6.0236 2.52077 4.6605 3.59064 3.59063C4.66051 2.52076 6.02361 1.79217 7.50756 1.49699C8.99152 1.20182 10.5297 1.35331 11.9275 1.93232C13.3254 2.51133 14.5202 3.49185 15.3607 4.74989C16.2013 6.00792 16.65 7.48697 16.65 9C16.65 11.0289 15.844 12.9747 14.4094 14.4094C12.9747 15.844 11.0289 16.65 9 16.65Z"/>
+                            <path d="M12.3749 8.32031H9.67495V5.62031C9.67495 5.44129 9.60383 5.2696 9.47725 5.14302C9.35066 5.01643 9.17897 4.94531 8.99995 4.94531C8.82093 4.94531 8.64924 5.01643 8.52265 5.14302C8.39607 5.2696 8.32495 5.44129 8.32495 5.62031V8.32031H5.62495C5.44593 8.32031 5.27424 8.39143 5.14765 8.51802C5.02107 8.6446 4.94995 8.81629 4.94995 8.99531C4.94995 9.17433 5.02107 9.34602 5.14765 9.47261C5.27424 9.5992 5.44593 9.67031 5.62495 9.67031H8.32495V12.3703C8.32495 12.5493 8.39607 12.721 8.52265 12.8476C8.64924 12.9742 8.82093 13.0453 8.99995 13.0453C9.17897 13.0453 9.35066 12.9742 9.47725 12.8476C9.60383 12.721 9.67495 12.5493 9.67495 12.3703V9.67031H12.3749C12.554 9.67031 12.7257 9.5992 12.8522 9.47261C12.9788 9.34602 13.0499 9.17433 13.0499 8.99531C13.0499 8.81629 12.9788 8.6446 12.8522 8.51802C12.7257 8.39143 12.554 8.32031 12.3749 8.32031Z"/>
+                        </svg>
+                    </td>
+                </tr>
+            </table>
+
+        </ng-template>
+    </nz-collapse-panel>
+</nz-collapse>
+

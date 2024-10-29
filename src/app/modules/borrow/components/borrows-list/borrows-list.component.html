@@ -1,0 +1,127 @@
+<div class="search">
+    <div class="toggle-mode"
+         [class.right]="activeViewMode === viewModes.STABLE"
+         [class.left]="activeViewMode === viewModes.ALL">
+        <div class="toggle-mode-item"
+             [class.active]="activeViewMode === viewModes.ALL"
+             (click)="changeViewMode(viewModes.ALL)">
+            <span class="gradient-text">All</span>
+        </div>
+        <div class="toggle-mode-item active"
+             [class.active]="activeViewMode === viewModes.STABLE"
+             (click)="changeViewMode(viewModes.STABLE)">
+            <span class="gradient-text">Stable</span>
+        </div>
+    </div>
+
+    <nz-input-group [nzSuffix]="suffixIconSearch">
+        <input type="text" [formControl]="searchControl" nz-input placeholder="Search"/>
+    </nz-input-group>
+    <ng-template #suffixIconSearch>
+        <i nz-icon nzType="search"></i>
+    </ng-template>
+</div>
+<nz-table #basicTable [nzData]="filteredData"
+          [nzShowPagination]="false"
+          nzTableLayout="auto"
+          [nzPageSize]="100">
+    <thead>
+    <tr>
+        <th *ngFor="let column of listOfColumns"
+            [nzSortOrder]="column.sortOrder"
+            [nzWidth]="column.nzWidth"
+            [nzSortFn]="column.sortFn"
+            [nzSortDirections]="column.sortDirections">
+            <span *ngIf="!column.subName">
+                {{ column.name }}
+            </span>
+            <div *ngIf="column.subName">
+                <div class="sub-name">({{column.subName}})</div>
+                {{ column.name }}
+            </div>
+        </th>
+    </tr>
+    </thead>
+    <tbody *ngIf="activeBorrows.length">
+        <tr >
+            <div class="connect-wallet-warning">
+                <span>Your Borrowings</span>
+            </div>
+        </tr>
+        <ng-container *ngFor="let reserve of getAsMarketReserves(basicTable.data)">
+            <tr class="pointer" *ngIf="reserve.haveBorrow"
+                (click)="navigate(reserve)">
+                <td class="asset">
+                    <div class="icon">
+                        <img [src]="reserve.assetPictureUrl" [alt]="reserve.name">
+                    </div>
+                    <span class="desktop-only"> {{reserve.name}} ({{reserve.symbol}})</span>
+                    <span class="mobile-only"> {{reserve.symbol}} </span>
+                </td>
+                <td>
+                    <ng-container  *ngIf="account$ | async">
+                        <b>
+                            {{util.getAvailableToBorrowInTokens(userReserves, reserve) | number: '1.0-2'}}
+                        </b> {{reserve.symbol}}
+                    </ng-container>
+
+                    <span *ngIf="!(account$ | async)">
+                        -
+                    </span>
+                </td>
+                <td>
+                    <div class="bold green">
+                        {{reserve.variableBorrowRate | bigNum: 25}} %
+                    </div>
+                </td>
+                <td>
+                    <div class="flex-centered">
+                        <a routerLink="/borrow/{{reserve.symbol}}/{{reserve.id}}" class="evl-btn outline">Borrow</a>
+                    </div>
+                </td>
+            </tr>
+        </ng-container>
+    </tbody>
+    <tbody>
+        <tr >
+            <div class="connect-wallet-warning" *ngIf="otherReserves.length">
+                <span>All available cryptocurrencies for borrowing</span>
+            </div>
+        </tr>
+        <ng-container
+                *ngFor="let reserve of getAsMarketReserves(basicTable.data)">
+            <tr class="pointer" *ngIf="!reserve.haveBorrow"
+                (click)="navigate(reserve)">
+                <td class="asset">
+                    <div class="icon">
+                        <img [src]="reserve.assetPictureUrl" [alt]="reserve.name">
+                    </div>
+                    <span class="desktop-only"> {{reserve.name}} ({{reserve.symbol}})</span>
+                    <span class="mobile-only"> {{reserve.symbol}} </span>
+                </td>
+                <td>
+                    <ng-container  *ngIf="account$ | async">
+                        <b>
+                            {{util.getAvailableToBorrowInTokens(userReserves, reserve) | number: '1.0-2'}}
+                        </b> {{reserve.symbol}}
+                    </ng-container>
+
+                    <span *ngIf="!(account$ | async)">
+                    -
+                </span>
+                </td>
+                <td>
+                    <div class="bold green">
+                        {{reserve.variableBorrowRate | bigNum: 25}} %
+                    </div>
+                </td>
+                <td>
+                    <div class="flex-centered">
+                        <a routerLink="/borrow/{{reserve.symbol}}/{{reserve.id}}" class="evl-btn outline">Details</a>
+                    </div>
+                </td>
+            </tr>
+        </ng-container>
+
+    </tbody>
+</nz-table>

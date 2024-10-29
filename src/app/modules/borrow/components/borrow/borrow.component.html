@@ -1,0 +1,184 @@
+<div class="wrapper">
+    <div>
+        <div class="row-overview">
+            <div class="col">
+                <div class="key">Amount Borrowed</div>
+                <div class="value">
+                    <b>{{currentUserReserve?.currentTotalDebt | bigNum: currentUserReserve?.reserve.decimals}}</b> {{reserve?.symbol}}
+                </div>
+            </div>
+            <div class="col">
+                <div class="key">
+                    Total collateral
+                </div>
+                <div class="value">
+                    <b>{{collateralTotal | number: '1.2'}} </b> USD
+                </div>
+            </div>
+            <div class="col">
+                <div class="key">Loan to value</div>
+                <div class="value">
+                    {{reserve.baseLTVasCollateral | bigNum: 4 | percent }}
+                </div>
+            </div>
+            <div class="col">
+                <div class="key">
+                    Health factor
+                    <app-tooltip-info [data]="INFO.HEALTH_FACTOR"></app-tooltip-info>
+                </div>
+                <div class="value">
+                    <b class="green">{{healthFactor | number: '1.0-2'}}</b>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="col main">
+            <div class="deposit-step" *ngIf="noAvailableLiquidity">
+                <div class="title">
+                    No liquidity
+                </div>
+                <div class="message">
+                    There is no {{reserve?.symbol}} available liquidity to borrow.
+                </div>
+                <button routerLink="/deposit" class="evl-btn red mt">Deposit now</button>
+            </div>
+            <ng-container *ngIf="!noAvailableLiquidity">
+                <div class="deposit-step" *ngIf="currentFlowStep === steps.USER_INPUT">
+                    <div class="title">
+                        How much would you like to borrow?
+                    </div>
+                    <div class="message">
+                        Please enter an amount you would like to borrow. The maximum amount you can borrow is shown
+                        below.
+                    </div>
+                    <div class="asset-input" [class.invalid]="amountControl?.invalid && amountControl.touched">
+                        <div class="head">
+                            <div class="key">Available to borrow</div>
+                            <div class="value"><b>{{availableToBorrow || 0 | number: '1.02'}}</b> {{reserve?.symbol}}
+                            </div>
+                        </div>
+                        <nz-input-group [nzSuffix]="suffixCurrency" [nzPrefix]="prefixIcon">
+                            <input
+                                    maxAmount
+                                    [maxAvailable]="availableToBorrow"
+                                    [decimals]="0"
+                                    [control]="amountControl"
+                                    [formControl]="amountControl"
+                                    nz-input type="number"
+                                    placeholder="Amount">
+                        </nz-input-group>
+                        <ng-template #suffixCurrency>
+                            <button class="gradient-text inline" (click)="setMax(100)">MAX</button>
+                        </ng-template>
+                        <ng-template #prefixIcon>
+                            <img class="asset-icon" [src]="reserve.assetPictureUrl">
+                        </ng-template>
+                        <div class="health-factor-container">
+                            <app-custom-slider (sliderChanges)="updateAmountByHealthFactor($event)"
+                                               [data]="healthFactorSlider"></app-custom-slider>
+                        </div>
+                        <div class="quick-select">
+                            <div class="quick-select-item" (click)="setMax(25)">25%</div>
+                            <div class="quick-select-item" (click)="setMax(50)">50%</div>
+                            <div class="quick-select-item" (click)="setMax(75)">75%</div>
+                            <div class="quick-select-item" (click)="setMax(100)">MAX</div>
+                        </div>
+
+                    </div>
+                    <button class="evl-btn red mt" (click)="checkAmount()">Continue</button>
+                    <button routerLink="/borrow" class="back">Go back</button>
+                </div>
+                <div class="deposit-step" *ngIf="currentFlowStep === steps.TRANSACTION_DETAILS">
+                    <div class="title">
+                        Borrow overview
+                    </div>
+                    <div class="message">
+                        These are your transaction details. Make sure to check if this is correct before submitting.
+                    </div>
+                    <div class="transaction-details">
+                        <div class="details stats">
+                            <div class="flex-row">
+                                <div class="key">Amount</div>
+                                <div class="col">
+                                    <div class="value">
+                                        <img class="asset-icon" [src]="reserve.assetPictureUrl" alt="">
+                                        <b>{{amountControl?.value}}</b> {{reserve.symbol}}
+                                    </div>
+                                    <div class="sub-total">
+                                        $ {{(amountControl?.value * +reserve.priceInUsd) | number: '1.0-2'}}</div>
+                                </div>
+                            </div>
+                            <div class="flex-row">
+                                <div class="key">Interest rate</div>
+                                <div class="value"><b class="brown">{{reserve.variableBorrowRate | bigNum: 25 }} %</b>
+                                </div>
+                            </div>
+                            <div class="flex-row">
+                                <div class="key">Interest rate type</div>
+                                <div class="value"><b class="green">Variable</b></div>
+                            </div>
+                            <div class="flex-row no-margin">
+                                <div class="key">New Health factor</div>
+                                <div class="value"><b class="green">{{nextHealthFactor | number: '1.0-2'}}</b></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fee-container">
+                        <div>
+                        <span>Origination fee 0.01% <app-tooltip-info
+                                [data]="INFO.ORIGINATION_FEE"></app-tooltip-info>
+                        </span>
+                        </div>
+                        <div>
+                        <span>
+                           {{(+amountControl?.value * 0.0001) | number: '1.0-5'}} {{reserve.symbol}}
+                            / $ {{(amountControl?.value * +reserve.priceInUsd * 0.0001) | number: '1.0-5'}} USD
+                        </span>
+                        </div>
+                    </div>
+                    <app-transaction (submit)="submitBorrow()"
+                                     (approve)="approve()"
+                                     [currentFlowStep]="currentTransactionsStatus"
+                                     [config]="transactionConfig"></app-transaction>
+                    <button (click)="changeStep(steps.USER_INPUT)" class="back">Go back</button>
+                </div>
+            </ng-container>
+        </div>
+        <div class="col secondary">
+            <div class="card stats">
+                <div class="card-title">
+                    <img [src]="reserve?.assetPictureUrl">  {{reserve?.symbol}} Reserve Overview
+                </div>
+                <div class="flex-row">
+                    <div class="key">Utilization rate</div>
+                    <div class="value"><b>{{reserve?.utilizationRate | percent}}</b></div>
+                </div>
+                <div class="flex-row">
+                    <div class="key">Available liquidity</div>
+                    <div class="value">
+                        <b>{{reserve?.totalLiquidity | bigNum: reserve?.decimals}}</b> {{reserve?.symbol}}
+                    </div>
+                </div>
+
+                <div class="flex-row">
+                    <div class="key">Asset price</div>
+                    <div class="value">$ <b>{{reserve?.priceInUsd | number: '1.2'}}</b>
+                    </div>
+                </div>
+                <div class="flex-row">
+                    <div class="key">Variable borrow rate</div>
+                    <div class="value"><b class="brown">{{reserve?.variableBorrowRate | bigNum: 25}}</b> %</div>
+                </div>
+                <div class="flex-row historical-rate">
+                    <div class="key">Historical rates</div>
+                    <div class="value">Variable</div>
+                </div>
+                <x-chartist type="Line"
+                            [data]="chartsData"
+                            [options]="options">
+                </x-chartist>
+            </div>
+        </div>
+    </div>
+</div>

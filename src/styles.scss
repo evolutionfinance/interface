@@ -1,0 +1,335 @@
+/* You can add global styles to this file, and also import other style files */
+@import "../node_modules/ng-zorro-antd/ng-zorro-antd.min.css";
+// -------- override less variables -----------
+//@primary-color: #f5222d;
+
+@import "src/assets/styles/variables";
+@import "src/assets/styles/ng-zorro";
+@import "src/assets/styles/transaction-details";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #F0F2F5;
+  font-size: 16px;
+  font-family: 'Roboto';
+  line-height: 1.15;
+  color: $black;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  &.flex {
+    display: flex;
+  }
+}
+
+
+.gradient-text {
+  background: linear-gradient(90deg, #DA4D7B 0%, #F05948 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  &.inline {
+    display: block;
+    width: fit-content;
+  }
+
+  &.inline-block {
+    display: inline-block;
+  }
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+
+.evl-btn {
+  width: 128px;
+  height: 44px;
+  background-color: #ffffff;
+  color: $red;
+  text-transform: uppercase;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  max-width: 100%;
+
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  &.red {
+    background: linear-gradient(90deg, #DA4D7B 0%, #F05948 100%);
+    color: #ffffff;
+  }
+
+  &.outline {
+    border: 1px solid $red;
+    background: var(--contentBackground);
+  }
+
+  &.small {
+    width: 85px;
+    height: 34px;
+    border-radius: 5px;
+  }
+}
+
+//
+//.ant-table-pagination.ant-pagination {
+//  display: none;
+//}
+
+img {
+  max-width: 100%;
+}
+
+
+.green {
+  color: var(--green);
+}
+
+.brown {
+  color: var(--orange);
+}
+
+.purple {
+  color: $purple;
+}
+
+.red {
+  color: $red;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+
+.toggle-mode {
+  width: 200px;
+  height: 44px;
+  background: var(--tableBorder);
+  border: 1px solid var(--toggleBorder);
+  border-radius: 40px;
+  display: flex;
+  padding: 3px;
+  position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    width: 50%;
+    top: 3px;
+    //transition: left cubic-bezier(.88, -.35, .565, 1.35) .4s;
+    transition: left ease-in-out .2s;
+    border-radius: 39px;
+    background-color: #ffffff;
+    box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.1);
+    height: 36px;
+    z-index: 0;
+  }
+
+  &.left {
+    &:after {
+      left: 3px;
+    }
+  }
+
+  &.right {
+    &:after {
+      left: calc(50% - 3px);
+    }
+  }
+
+
+  &-item {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 39px;
+    z-index: 1;
+    font-size: 14px;
+    cursor: pointer;
+  }
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.content-wrapper {
+  background: #ffffff;
+  border-radius: 2px;
+  height: 100%;
+  width: 100%;
+  padding: 24px;
+}
+
+
+.stats {
+  .flex-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5em;
+    line-height: 1;
+    font-size: 16px;
+
+    &.no-margin {
+      margin: 0;
+    }
+  }
+
+}
+
+
+.asset-input {
+
+  &.invalid {
+    .ant-input-affix-wrapper {
+      border: 1px solid red;
+    }
+  }
+
+  .ant-input-affix-wrapper {
+    border-radius: 5px;
+    //border: 1px solid $black;
+    width: 375px;
+    padding: 10px 15px;
+  }
+
+  .ant-input-prefix {
+    margin-right: 10px;
+  }
+
+  .suffix {
+    margin-left: 10px;
+  }
+
+  .head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 14px;
+    align-items: center;
+
+    .value {
+      font-size: 17px;
+    }
+  }
+
+  .quick-select {
+    display: flex;
+    justify-content: space-between;
+    margin: 25px 0;
+
+    &-item {
+      padding: 7px 12px;
+      width: 19%;
+      border-radius: 5px;
+      border: 1px solid var(--textColor);
+      display: flex;
+      text-align: center;
+      font-size: 14px;
+      cursor: pointer;
+      justify-content: center;
+    }
+  }
+}
+
+
+.asset-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.ct-chart-line {
+  .ct {
+    &-point {
+      stroke-width: 3px;
+    }
+
+    &-line {
+      stroke-width: 1px;
+    }
+
+    &-label {
+      &.ct-vertical {
+        font-size: 11px;
+      }
+    }
+  }
+}
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.deposit-step {
+  width: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+
+  .title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .message {
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  button.mt {
+    margin-top: 24px;
+  }
+}
+
+.back {
+  margin-top: 24px;
+  background: linear-gradient(90deg, #DA4D7B 0%, #F05948 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+}
+
+.flex-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

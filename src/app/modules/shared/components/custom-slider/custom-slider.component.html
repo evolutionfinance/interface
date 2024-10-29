@@ -1,0 +1,9 @@
+<div class="slider-container">
+    <div class="slider-content">
+        <span class="green-title">Safer</span>
+        <span>{{data.title}} <b>{{sliderControl.value | number: '1.2'}}</b></span>
+        <span class="red">Riskier</span>
+    </div>
+    <nz-slider [formControl]="sliderControl" [nzReverse]="true" [nzMin]="data.min" [nzStep]="0.01" [nzMax]="data.max">
+    </nz-slider>
+</div>

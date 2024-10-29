@@ -1,0 +1,240 @@
+@import "src/assets/styles/variables";
+
+.ren-container {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: var(--textColor);
+  overflow: auto;
+
+  .ren-content {
+    width: 500px;
+    padding: 48px;
+    background: var(--contentBackground);
+    display: flex;
+    flex-direction: column;
+
+    nz-select {
+      margin-bottom: 24px;
+      width: 100%;
+
+      ::ng-deep {
+
+        nz-select-top-control {
+          background: var(--contentBackground);
+          height: 44px;
+        }
+
+        nz-select-placeholder {
+          color: var(--textColor);
+        }
+
+        nz-select-arrow i {
+          color: $red;
+        }
+
+        nz-option-container {
+          background: var(--contentBackground);
+        }
+
+        nz-select-search {
+          display: flex;
+          align-items: center;
+
+          input {
+            padding-left: 70px;
+          }
+        }
+
+        .ant-select-selection-placeholder, .selected-content {
+          display: flex;
+          align-items: center;
+
+          img {
+            margin-right: 5px;
+          }
+        }
+
+        nz-select-item {
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+
+    .balance-container {
+      border: 1px solid #ededed;
+      padding: 10px;
+      margin-bottom: 24px;
+    }
+
+    ::ng-deep {
+      .ant-tabs-tab {
+        background: var(--contentBackground);
+
+        .ant-tabs-tab-btn {
+          color: var(--textColor) !important;
+        }
+      }
+
+      .ant-tabs-content {
+        border: 1px solid #ededed;
+        border-top: 0;
+      }
+
+      .ant-tabs-nav-list {
+        > div {
+          width: 50%;
+        }
+      }
+    }
+
+    .tab-content {
+      width: 100%;
+      height: 100%;
+      padding: 10px;
+
+      .eth-address input {
+        width: 100%;
+        border: 1px solid #ededed;
+        padding: 10px;
+        margin-bottom: 24px;
+      }
+
+      .amount-input {
+        margin-bottom: 24px;
+        padding: 0 0 0 10px !important;
+      }
+
+      .amount-btn-container {
+        display: flex;
+        align-items: center;
+
+        div:last-child {
+          border-left: 1px solid #ededed;
+          padding: 10px;
+        }
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .error-container {
+        border: 1px solid $red;
+        border-radius: 8px;
+        color: $red;
+        word-wrap: break-word;
+        padding: 10px;
+        margin-top: 10px;
+        font-size: 16px;
+      }
+
+      .submit-info {
+        display: flex;
+        flex-direction: column;
+        padding-top: 20px;
+        color: var(--textColor);
+
+        .deposit {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .watching-deposit {
+          color: var(--textColor);
+          padding-top: 24px;
+          margin: auto;
+        }
+      }
+    }
+  }
+
+  .deposits-container {
+    margin-bottom: 20px;
+  }
+
+  .transaction-info {
+    width: 500px;
+    padding: 24px 63px;
+    background: var(--contentBackground);
+    color: var(--textColor);
+    display: flex;
+    flex-direction: column;
+    line-height: 1.5;
+    margin-top: 20px;
+
+    span:not(:last-child) {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    span:last-child {
+      word-break: break-all;
+    }
+
+    .submit-deposit-btn {
+      width: 100%;
+      margin-top: 20px;
+    }
+  }
+}
+
+::ng-deep {
+  .ant-select-dropdown {
+    background: var(--contentBackground);
+  }
+
+  .crypto-option-content {
+    display: flex;
+    justify-content: space-between;
+    color: var(--textColor);
+  }
+
+  .crypto-option-content:first-child {
+    img {
+      margin-right: 15px;
+    }
+  }
+
+  .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+    background: var(--tableBorder);
+  }
+
+  input {
+    background: var(--contentBackground);
+  }
+
+  input::placeholder {
+    color: yellow;
+  }
+
+  .ant-input-affix-wrapper {
+    border: 1px solid #ededed;
+  }
+
+  .ant-input-affix-wrapper {
+    padding: 9px 11px;
+  }
+
+  .amount-input:hover {
+    border: 1px solid #ededed;
+  }
+
+  .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    border-color: $red !important;
+    box-shadow: unset !important;
+  }
+
+  .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+    border-color: $red !important;
+  }
+
+  nz-option-item {
+    padding: 4px 12px !important;
+  }
+}

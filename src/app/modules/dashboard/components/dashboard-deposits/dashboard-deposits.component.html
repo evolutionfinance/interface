@@ -1,0 +1,95 @@
+<div class="deposit-container">
+    <div *ngIf="data.length; else emptyDepositsList">
+        <div class="balance-container">
+            <div class="left-section">
+                <div class="row">
+                    <span>Aggregated balance</span>
+                    <span class="balance-counter">
+                <b>$ {{approximateBalance | number: '1.0-2'}}</b>
+                 USD
+            </span>
+                </div>
+                <div>
+            <span>
+                Deposit composition
+            </span>
+                    <div>
+                        <app-composition-bar [config]="compositionConfig"></app-composition-bar>
+                    </div>
+                </div>
+            </div>
+            <div class="right-section">
+            </div>
+        </div>
+
+        <nz-table #basicTable [nzData]="data"
+                  [nzShowPagination]="false"
+                  nzTableLayout="auto"
+                  [nzPageSize]="100"
+                  [nzScroll]="{ y: 'calc(100vh - 429px)'}">
+            <thead>
+            <tr>
+                <th *ngFor="let column of listOfColumns"
+                    [nzSortOrder]="column.sortOrder"
+                    [nzWidth]="column.nzWidth"
+                    [nzSortFn]="column.sortFn"
+                    [nzSortDirections]="column.sortDirections">
+                    <span>
+                        {{ column.name }}
+                    </span>
+                    <app-tooltip-info [data]="INFO.COLLATERAL"
+                                      *ngIf="column.name === 'Collateral'">
+                    </app-tooltip-info>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="pointer"
+                *ngFor="let item of getAsUserReserves(basicTable.data)">
+                <td class="asset">
+                    <div class="icon">
+                        <img [src]="item.reserve.assetPictureUrl" [alt]="item.reserve.name">
+                    </div>
+                    <span> {{item.reserve.name}} ({{item.reserve.symbol}})</span>
+                </td>
+                <td>
+                    <b>
+                        {{
+                        item.currentATokenBalance | bigNum: item.reserve.decimals: 4
+                        }}
+                    </b>
+                    {{item.reserve.symbol }}
+                </td>
+                <td>
+                    <div class="green bold">
+                        {{item.reserve.liquidityRate | bigNum: 25 | fNumber}} %
+                    </div>
+                </td>
+                <td>
+                    <div class="brown bold">
+                        <nz-switch
+                                [(ngModel)]="item.usageAsCollateralEnabledOnUser"
+                                (ngModelChange)="changeDepositCollateral(item)">
+                        </nz-switch>
+                    </div>
+                </td>
+                <td>
+                    <div class="brown bold">
+                        <div class="action-buttons">
+                            <button class="evl-btn red" (click)="navigateToDeposit(item)">
+                                DEPOSIT
+                            </button>
+                            <button class="evl-btn outline" (click)="navigateToWithdraw(item)">
+                                WITHDRAW
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </nz-table>
+    </div>
+    <ng-template #emptyDepositsList>
+        <app-empty-list></app-empty-list>
+    </ng-template>
+</div>

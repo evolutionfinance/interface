@@ -1,0 +1,170 @@
+@import "src/assets/styles/variables";
+
+.content-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--contentBackground);
+  color: var(--textColor);
+}
+
+.FAQ {
+  color: $red;
+}
+
+.swap-row {
+  display: flex;
+  justify-content: space-between;
+  //width: 700px;
+  max-width: unset;
+  margin: 45px 0;
+}
+
+.select-holder {
+  margin: 0 25px;
+
+  .label {
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+
+  .deposit-rate {
+    font-size: 14px;
+    margin-top: 10px;
+  }
+
+  ::ng-deep {
+
+
+    .ant-select {
+      &-selector {
+        background: linear-gradient(90deg, #DA4D7B 0%, #F05948 100%);
+        color: #ffffff;
+        width: 150px;
+        height: 44px;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      &-disabled {
+        .ant-select-selector {
+          background: linear-gradient(90deg, #DA4D7B 0%, #F05948 100%);
+          color: #ffffff;
+        }
+      }
+
+      &-selection-item {
+        line-height: 42px;
+      }
+
+      &-selection-search-input {
+        height: 42px !important;
+      }
+
+      &-arrow {
+        color: #ffffff;
+      }
+
+      &-selection-placeholder {
+        color: #ffffff;
+        height: 42px;
+        line-height: 42px;
+      }
+    }
+
+    //.ant-select-selector {
+    //  background: linear-gradient(90deg, #DA4D7B 0%, #F05948 100%);
+    //  color: #ffffff;
+    //  width: 120px;
+    //  height: 44px;
+    //  border-radius: 5px;
+    //}
+    //
+    //.ant-select-arrow {
+    //  color: #ffffff;
+    //}
+  }
+
+}
+
+
+.input-holder {
+  margin: 0 24px;
+
+  .available {
+    height: 18px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: flex-end;
+
+    b {
+      margin-left: 10px;
+    }
+  }
+
+  input {
+    height: 42px;
+    width: 210px;
+    border-radius: 3px;
+  }
+
+  .total {
+    text-align: right;
+    margin-top: 10px;
+  }
+}
+
+
+.swap-details {
+  width: 300px;
+  margin-bottom: 40px;
+
+  .flex-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 15px;
+    background-color: var(--headerBackground);
+    margin-bottom: 2px;
+    font-size: 14px;
+
+    &.red-icon {
+      i {
+        color: $red;
+        margin-left: 10px;
+        font-size: 10px;
+      }
+
+      .key {
+        display: flex;
+        align-items: center;
+
+      }
+    }
+
+    i {
+      color: $black;
+    }
+  }
+
+  .quick-select {
+    display: flex;
+    justify-content: space-between;
+
+    &-item {
+      padding: 3px 7px;
+      width: 19%;
+      border-radius: 5px;
+      border: 1px solid $black;
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      font-size: 14px;
+      cursor: pointer;
+
+      &.input {
+        width: 35%;
+      }
+    }
+  }
+}
